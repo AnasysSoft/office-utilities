@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import moment from 'jalali-moment';
 import { JalaliDatePipe } from '../../../core/pipes/jalali-date';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../core/services/user-service';
 
 
 type DayInfo = {
@@ -15,7 +17,7 @@ type DayInfo = {
 
 @Component({
   selector: 'app-meal-selection',
-  imports: [CommonModule,JalaliDatePipe],
+  imports: [CommonModule,  JalaliDatePipe],
   templateUrl: './meal-selection.html',
   styleUrl: './meal-selection.scss'
 })
@@ -23,7 +25,10 @@ export class MealSelection {
 
   days: (DayInfo)[] = [];
    
-  constructor(){
+  constructor(  
+        private _userService: UserService,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router){
     const today = new Date();
     today.setHours(0, 0, 0, 0)
 
@@ -39,25 +44,11 @@ export class MealSelection {
     }
   }
 
-  private getPersianDayName(date: Date): string {
-  const dayIndex = date.getDay(); // 0 = یکشنبه ... 6 = شنبه
-  const persianDays = [
-    'یکشنبه',
-    'دوشنبه',
-    'سه‌شنبه',
-    'چهارشنبه',
-    'پنجشنبه',
-    'جمعه',
-    'شنبه',
-  ];
-  return persianDays[dayIndex];
-}
+  selectItem(dayInfo: DayInfo) {
+    this._router.navigate(['./rsv/list']);
+  }
+
 
 }
 
 
-export const mealNames = [
-  'صبحانه', 'ناهار', 'شام', 'میان‌وعده',
-  'صبحانه', 'ناهار', 'شام', 'میان‌وعده',
-  'صبحانه', 'ناهار', 'شام'
-];

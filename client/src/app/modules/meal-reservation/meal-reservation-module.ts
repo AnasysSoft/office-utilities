@@ -9,6 +9,7 @@ const routes: Routes = [
   {path: '', component: MealReservationDashboard, 
     children: [
         {path: 's', component: MealSelection},
+        {path: 'list', component: MealsList},
         {path: '**', component: MealSelection},
     ]}, 
     {path: 'list', component: MealsList} 

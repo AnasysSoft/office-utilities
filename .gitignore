@@ -1,11 +1,11 @@
 # Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
+client/dist
+client/out-tsc/
+client/tmp/
+client/coverage/
+client/e2e/test-output/
+client/.angular/
+client/.angular/
 
 # Node modules and dependency files
 /node_modules/
@@ -30,3 +30,4 @@ yarn-error.log*
 client/.vscode
 client/node_modules
 client/package-lock.json
+client/dist

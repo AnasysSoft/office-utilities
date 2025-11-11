@@ -25,9 +25,13 @@
                 class="bg-rose-600 text-white px-5 mx-2 py-2 rounded-full text-sm font-bold">
             امروز
           </span>
-          <span class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-medium">
-            {{ day.meal }}
-          </span>
+          
+           <button (click)="selectItem(day)"
+                  class="bg-blue-600 hover:bg-blue-700 rounded-full text-white px-5 py-3 font-medium transition flex items-center gap-2 shadow-md">
+            
+               {{ day.meal }}
+          </button>
+
         </div>
       </div>
     </div>
