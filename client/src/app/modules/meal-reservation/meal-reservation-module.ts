@@ -1,12 +1,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MealReservationDashboard } from './meal-reservation-dashboard/meal-reservation-dashboard';
+import { Routes, RouterModule } from '@angular/router';
+import { MealSelection } from './meal-selection/meal-selection';
+import { MealsList } from './meals-list/meals-list';
 
+const routes: Routes = [
+  {path: '', component: MealReservationDashboard, 
+    children: [
+        {path: 's', component: MealSelection},
+        {path: '**', component: MealSelection},
+    ]}, 
+    {path: 'list', component: MealsList} 
+]
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule.forChild(routes),
   ]
 })
 export class MealReservationModule { }
