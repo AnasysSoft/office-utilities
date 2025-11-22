@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import moment from 'jalali-moment';
 import { JalaliDatePipe } from '../../../core/pipes/jalali-date';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../core/services/user-service';
+import { UserService } from '../../../core/user/user-service';
 
 
 type DayInfo = {
