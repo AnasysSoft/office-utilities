@@ -1,8 +1,45 @@
 
-<div class="flex flex-col justify-center">
-    <div class="min-h-100 bg-rose-600">
+<div class="flex flex-col justify-center rounded-3xl 
+            bg-gradient-to-b from-purple-400 via-purple-600 to-blue-500 
+            p-6 m-1 shadow-2xl max-w-100">
+    <div class="min-h-100">
 
     </div>
-    <div class="flex font-bold justify-center">سامانه روزر غذا</div>
-    <div class="flex bg-red-500 justify-center">پتروشیمی تبریز</div>
+    <div class="flex flex-col font-bold my-2 text-center">
+        <span>سامانه روزر غذا</span>
+        <span class="text-xs">پتروشیمی تبریز</span>
+    </div> 
+    <form *ngIf="entityForm" [formGroup]="entityForm" (ngSubmit)="login()">
+        <div class="flex w-full flex-col items-start gap-3">
+                        <p-iftalabel class="w-full">
+                            <p-iconfield>
+                                <p-inputicon>
+                                    <pt-icon name="envelope" />
+                                </p-inputicon>
+                                <input pInputText id="personnelCode" maxlength="6" [formControlName]="'personnelCode'" autocomplete="off" placeholder="شماره پرسنلی خود را وارد نمایید" class="w-full"/>
+                                <label for="personnelCode">کد پرسنلی</label>
+                            </p-iconfield>
+                        </p-iftalabel>
+                        <small class="text-danger" *ngIf="formErrors.personnelCode">
+                                {{ formErrors.personnelCode }}
+                            </small>
+
+                        <p-iftalabel class="w-full">
+                            <p-iconfield>
+                                <p-inputicon (click)="togglePasswordVisibility()">
+                                    <pt-icon [name]="passwordFieldType === 'password' ? 'eye' : 'eye-slash'" />
+                                </p-inputicon>
+                                <input pInputText id="password" [type]="passwordFieldType" maxlength="8" [formControlName]="'password'" autocomplete="off" placeholder="رمز خود را وارد نمایید" class="w-full"/>
+                                <label for="password">رمز ورود</label>
+                            </p-iconfield>
+                        </p-iftalabel>
+                        <small class="text-danger" *ngIf="formErrors.password">
+                                {{ formErrors.password }}
+                            </small>
+
+                        <p-button label="ورود" class="w-full" type="submit" [disabled]="entityForm.invalid || entityForm.pending"/>
+                    </div>
+
+                     
+    </form>
 </div>

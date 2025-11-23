@@ -1,2 +1,740 @@
-/* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
+@use 'tailwindcss';
+
+@theme {
+	--color-light-1: #fcc49c;
+	--color-light-2: #f5f3ea;
+	--color-blu-light-1: #bbc2e4;
+	--color-blue-light-2: #4f5e9a;
+	--color-blue-light-3: #f1f3fa;
+	--color-blue-light-4: #f6f7ff;
+	--color-landing-secondary: #161b31;
+	--color-landing-secondary-pressed: #111528;
+	--color-landing-secondary-hover: #2c3559;
+	--color-dark-2: rgba(17, 21, 40, 0.7);
+	--color-landing-primary: #ff5857;
+	--color-l-opressed: #fa4140;
+	--color-surface-50: #f8fafc;
+	--color-surface-100: #f1f5f9;
+	--color-surface-300: #f8fafc;
+	--color-surface-900: #0f172a;
+	--color-pink-light-2: #fffbf9;
+	--color-white-12: rgba(255, 255, 255, 0.12);
+	--color-white-35: rgba(255, 255, 255, 0.35);
+	--color-dark-3: rgba(44, 53, 89, 0.5);
+	--color-invalid: #b62012;
+	--color-l-hover: #ff8884;
+	--color-success: #24d55c;
+	--color-success-hover: #16a643;
+	--color-danger: #8c1307;
+	--color-light-green: #effff4;
+	--color-green-8: rgba(36, 213, 92, 0.08);
+	--color-info-hover: #028c88;
+	--color-warn: #FD8207;
+	--color-warn-hover: #cf6a04;
+	--color-slate-900: #0f172a;
+	--color-primary-40: #b1a9d7;
+}
+
+.p-iftalabel {
+	&:has(label) {
+		.p-inputtext {
+			padding: 21px 8.75px 7px 8.75px !important;
+		}
+	}
+}
+
+
+.p-select-header .p-iconfield .p-select-filter {
+	padding: 5.25px 8.75px !important;
+}
+
+.p-select-header .p-iconfield .p-inputicon {
+	top: 0;
+	right: 0;
+	transform: translate(-50%, 50%);
+}
+
+.p-inputtext, .p-textarea {
+	padding: 5.25px 8.75px !important;
+
+	&:has(+ label) {
+		padding: 21px 8.75px 7px 8.75px !important;
+	}
+
+	&::placeholder {
+		color: var(--color-dark-3) !important;
+		font-size: 14px;
+	}
+
+	&:not(:disabled){
+		&:hover::placeholder {
+			color: var(--color-landing-secondary) !important;
+		}
+	}
+
+	&:focus::placeholder {
+		color: var(--color-landing-secondary) !important;
+	}
+
+	&:disabled { 
+		color: var(--color-dark-3) !important;
+	}
+
+	&:disabled + label {
+		color: var(--color-dark-3) !important;
+	}
+}
+
+.p-select{ 
+	.p-placeholder{
+		color: var(--color-dark-3) !important;
+		font-size: 14px;
+	}
+
+	&:not(:disabled){
+		&:hover .p-placeholder {
+			color: var(--color-landing-secondary) !important;
+		}
+	}
+
+	&:focus .p-placeholder {
+		color: var(--color-landing-secondary) !important;
+	}
+
+	&.p-disabled {
+        & + label { 
+            color: var(--color-blu-light-1) !important;
+        }
+
+		.p-placeholder {
+			color: var(--color-blu-light-1) !important;
+		}
+    }
+
+	&:not(:has(+ label)) {
+		.p-select-label{
+			@apply py-[7px] ltr:pl-[10.5px] rtl:pr-[10.5px];
+		}
+    }
+}
+
+.p-inputicon {
+	// html[lang='en'] &,
+	// html[lang='ru'] & {
+	// 	right: 0 !important;
+	// 	left: auto !important;
+	// }
+
+	// html[lang='fa'] &,
+	// html[lang='ar'] & {
+	// 	left: 10px !important;
+	// 	right: auto !important;
+	// }
+	right: 0 !important;
+	left: auto !important;
+}
+
+.p-button {
+	@apply w-full !text-[12.25px];
+}
+
+.p-button:not(:has(.p-button-label)) {
+	width: 24px !important;
+	height: 24px !important;
+}
+
+.p-tag {
+	border: 1px solid var(--color-l-opressed);
+
+	&-success {
+		border: 1px solid var(--color-success);
+	}
+
+	&-info {
+		border: 1px solid var(--color-info-hover);
+	}
+
+	&-danger {
+		border: 1px solid var(--color-invalid);
+	}
+
+	&-warn {
+		border: 1px solid var(--color-light-1);
+	}
+
+	&-secondary {
+		border: 1px solid var(--color-blue-light-2);
+	}
+}
+
+.center{
+	.p-message-content, .p-tablist-tab-list {
+		justify-content: center !important;
+	}
+}
+
+.p-select-label {
+	font-size: 12px !important;
+}
+
+.p-inputgroupaddon{
+	color: var(--color-blue-light-2) !important;
+	font-size: 12px;
+}
+
+.p-inputgroup{
+	.p-inputnumber {
+		&-input {
+			border-start-start-radius: 12px !important;
+			border-end-start-radius: 12px !important;
+		}
+	}
+	width: auto !important;
+}
+
+.p-chip {
+	box-shadow: 0 0 2px 0 var(--dark-3, rgba(44, 53, 89, 0.50)) inset;
+	font-size: 14px;
+}
+
+.p-datepicker {
+	@apply flex flex-row-reverse;
+
+	.p-inputtext {
+		@apply w-full;
+	}
+
+	span {
+		@apply px-2;
+	}
+}
+
+.p-tooltip{
+	font-size: 12px;
+}
+
+// Scroll
+.custom-scrollbar {
+	@apply ltr:pr-3 rtl:pl-3;
+  	scrollbar-gutter: stable;
+
+	&::-webkit-scrollbar {
+		width: 1.5px;
+		height: 1.5px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--color-light-1);
+		border-radius: 10px;
+	}
+
+	&::-webkit-scrollbar-thumb:hover {
+		background-color: var(--color-light-2);
+	}
+
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-light-1) transparent;
+}
+
+:root {
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Select ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-select-background: white;
+	--p-select-dropdown-color: var(--color-blue-light-2);
+	--p-select-border-color: var(--color-blu-light-1);
+	--p-select-hover-border-color: var(--color-landing-secondary-hover);
+	--p-select-focus-border-color: var(--color-landing-secondary-pressed);
+	--p-select-invalid-border-color: var(--color-invalid);
+	--p-select-border-radius: 12px;
+	--p-select-overlay-background: white;
+	--p-select-overlay-border-color: #e2e8f0;
+	--p-select-overlay-border-radius: 6px;
+	--p-select-option-padding: 7px 10.5px;
+	--p-select-padding-x: 10.5px;
+	--p-select-padding-y: 10.5px;
+	--p-select-dropdown-width: 35px;
+	--p-select-disabled-background: var(--color-blue-light-3);
+	--p-select-list-header-padding: 8px;
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Input ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+
+	--p-inputtext-background: white;
+	--p-iftalabel-input-padding-top: 21px;
+	--p-iftalabel-input-padding-bottom: 7px;
+	--p-iftalabel-input-padding-x: 8.75px;
+	--p-inputtext-padding-x: 8.75px;
+	--p-inputtext-border-radius: 12px;
+	--p-inputtext-border-color: var(--color-blu-light-1);
+	--p-inputtext-hover-border-color: var(--color-blue-light-2);
+	--p-inputtext-focus-border-color: var(--color-landing-secondary-hover);
+	--p-iftalabel-position-x: 10.5px;
+	--p-iftalabel-top: 7px;
+	--p-iftalabel-font-size: 10.5px;
+	--p-iftalabel-font-weight: 400;
+	--p-iftalabel-color: var(--color-landing-secondary-pressed);
+	--p-iftalabel-focus-color: var(--color-blue-light-2);
+	--p-inputtext-color: var(--color-landing-secondary);
+	--p-iconfield-icon-color: var(--color-blu-light-1);
+	--p-inputtext-disabled-background: white;
+	--p-inputtext-invalid-border-color: var(--color-invalid);
+
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Textarea ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-textarea-border-color: var(--color-blu-light-1);
+	--p-textarea-hover-border-color: var(--color-blue-light-2);
+	--p-textarea-focus-border-color: var(--color-landing-secondary-hover);
+	--p-textarea-border-radius: 12px;
+	--p-textarea-padding-x: 8.75px;
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- InputGroup ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-inputgroup-addon-border-radius: 6px;
+	--p-inputgroup-addon-background: var(--color-blue-light-4);
+	--p-inputgroup-addon-border-color: var(--color-blu-light-1);
+	--p-inputgroup-addon-padding: 3.5px 7px;
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Button ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+
+	// ---------------------------------------- Primary ---------------------------------------
+	--p-button-border-radius: 12px;
+	--p-button-padding-y: 5.25px;
+	--p-button-padding-x: 8.75px;
+	--p-button-gap: 7px;
+	--p-button-raised-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10), 0 2px 4px -2px rgba(0, 0, 0, 0.10);
+	--p-button-rounded-border-radius: 28px;
+
+	// ------Current
+	--p-button-primary-background: var(--color-landing-primary);
+	--p-button-primary-border-color: var(--color-landing-primary);
+	--p-button-primary-color: white;
+
+	// ------Hover
+	--p-button-primary-hover-background: var(--color-l-opressed);
+	--p-button-primary-hover-border-color: var(--color-l-opressed);
+	--p-button-primary-hover-color: white;
+
+	// ------Active
+	--p-button-primary-active-background: var(--color-landing-primary);
+	--p-button-primary-active-border-color: var(--color-landing-primary);
+	--p-button-primary-active-color: white;
+
+	// ------Disabled
+	--p-disabled-opacity: 0.7;
+
+	// ---------------------------------------Contrast---------------------------------------
+	// ------Current
+	--p-button-contrast-background: var(--color-landing-secondary-pressed);
+	--p-button-contrast-border-color: var(--color-landing-secondary-pressed);
+	--p-button-contrast-color: white;
+
+	// ------Hover
+	--p-button-contrast-hover-background: var(--color-landing-secondary-hover);
+	--p-button-contrast-hover-border-color: var(--color-landing-secondary-hover);
+	--p-button-contrast-hover-color: white;
+
+	// ------Active
+	--p-button-contrast-active-background: var(--color-landing-secondary);
+	--p-button-contrast-active-border-color: var(--color-landing-secondary);
+	--p-button-contrast-active-color: white;
+
+	// ---------------------------------------Secondary---------------------------------------
+	// ------Current
+	--p-button-secondary-background: var(--color-light-2);
+	--p-button-secondary-border-color: white;
+	--p-button-secondary-color: var(--color-landing-secondary-hover);
+
+	// ------Hover
+	--p-button-secondary-hover-background: var(--color-blu-light-1);
+	--p-button-secondary-hover-border-color: var(--color-blue-light-3);
+	--p-button-secondary-hover-color: var(--color-landing-secondary-pressed);
+
+	// ------Active
+	--p-button-secondary-active-background: var(--color-blue-light-4);
+	--p-button-secondary-active-border-color: var(--color-blue-light-2);
+	--p-button-secondary-active-color: var(--color-landing-secondary-hover);
+
+	// ---------------------------------------Contrast(Outlined)---------------------------------------
+	// ------Current
+	--p-button-outlined-contrast-border-color: var(--color-landing-secondary);
+	--p-button-outlined-contrast-color: var(--color-landing-secondary-pressed);
+
+	// ------Hover
+	--p-button-outlined-contrast-hover-background: var(--color-pink-light-2);
+	--p-button-outlined-contrast-hover-border-color: var(--color-landing-secondary);
+	--p-button-contrast-hover-border-color: var(--color-landing-secondary-pressed);
+
+	// ------Active
+	--p-button-outlined-contrast-active-background: var(--color-pink-light-2);
+
+	// ---------------------------------------Danger---------------------------------------
+	
+	// ------Current
+	--p-button-danger-background: var(--color-invalid);
+	--p-button-danger-border-color: var(--color-invalid);
+	--p-button-danger-color: white;
+
+	// ------Hover
+	--p-button-danger-hover-background: var(--color-danger);
+	--p-button-danger-hover-border-color: var(--color-danger);
+	--p-button-danger-hover-color: white;
+
+	// ------Active
+	--p-button-danger-active-background: var(--color-danger);
+	--p-button-danger-active-border-color: var(--color-danger);
+	--p-button-danger-active-color: white;
+
+	// ---------------------------------------Warn---------------------------------------
+	
+	// ------Current
+	--p-button-warn-background: var(--color-warn);
+	--p-button-warn-border-color: var(--color-warn);
+	--p-button-warn-color: white;
+
+	// ------Hover
+	--p-button-warn-hover-background: var(--color-warn-hover);
+	--p-button-warn-hover-border-color: var(--color-warn-hover);
+	--p-button-warn-hover-color: white;
+
+	// ------Active
+	--p-button-warn-active-background: var(--color-warn);
+	--p-button-warn-active-border-color: var(--color-warn);
+	--p-button-warn-active-color: white;
+
+	// ---------------------------------------Danger(Outlined)---------------------------------------
+	// ------Current
+	--p-button-outlined-danger-border-color: var(--color-invalid);
+	--p-button-outlined-danger-color: var(--color-invalid);
+
+	// ------Hover
+	--p-button-outlined-danger-hover-background: var(--color-pink-light-2);
+	--p-button-outlined-danger-hover-border-color: var(--color-invalid);
+	--p-button-danger-hover-border-color: var(--color-invalid);
+
+	// ------Active
+	--p-button-outlined-danger-active-background: var(--color-pink-light-2);
+
+	// ---------------------------------------Plain(Text)---------------------------------------
+	--p-button-text-primary-hover-background: var(--color-pink-light-2);
+	--p-button-text-primary-active-background: var(--color-pink-light-2);
+	--p-button-text-primary-color: var(--color-landing-primary);
+
+	// ---------------------------------------Plain(Contrast)---------------------------------------
+	--p-button-text-contrast-hover-background: var(--color-light-2);
+	--p-button-text-contrast-active-background: var(--color-light-2);
+	--p-button-text-contrast-color: var(--color-landing-secondary-pressed);
+
+	// ---------------------------------------Secondary(Outlined)---------------------------------------
+	// ------Current
+	--p-button-outlined-secondary-border-color: var(--color-blu-light-1);
+	--p-button-outlined-secondary-color: var(--color-blue-light-2);
+	
+	// ------Hover
+	--p-button-outlined-secondary-hover-background: var(--color-blue-light-3);
+	--p-button-outlined-secondary-hover-border-color: var(--color-blu-light-1);
+	--p-button-secondary-hover-border-color: var(--color-blu-light-1);
+
+	// ------Active
+	--p-button-outlined-secondary-active-background: var(--color-blue-light-3);
+
+
+	// ---------------------------------------Primary(Outlined)---------------------------------------
+	// ------Current
+	--p-button-outlined-primary-border-color: var(--color-l-opressed);
+	--p-button-outlined-primary-color: var(--color-l-opressed);
+	
+	// ------Hover
+	--p-button-outlined-primary-hover-background: var(--color-pink-light-2);
+	--p-button-outlined-primary-hover-border-color: var(--color-l-opressed);
+	--p-button-primary-hover-border-color: var(--color-l-opressed);
+
+	// ------Active
+	--p-button-outlined-primary-active-background: var(--color-pink-light-2);
+
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Checkbox ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-checkbox-width: 17.5px;
+	--p-checkbox-height: 17.5px;
+	--p-checkbox-border-radius: 4px;
+	--p-checkbox-border-color: var(--color-blu-light-1);
+	--p-checkbox-hover-border-color: var(--color-l-hover);
+	--p-checkbox-checked-border-color: var(--color-l-opressed);
+	--p-checkbox-checked-hover-border-color: var(--color-l-opressed);
+	--p-checkbox-checked-background: var(--color-landing-primary);
+	--p-checkbox-checked-hover-background: var(--color-landing-primary);
+	--p-checkbox-transition-duration: .3s;
+	--p-checkbox-icon-checked-color: white;
+	--p-checkbox-icon-checked-hover-color: var(--color-blu-light-1);
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Tabs ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-tabs-tablist-border-width: 0px;
+	--p-tabs-tab-border-width: 0 0 1px;
+	--p-tabs-tab-border-color: white;
+	--p-tabs-tab-hover-border-color: var(--color-landing-secondary-pressed);
+	--p-tabs-tab-active-border-color: var(--color-landing-secondary-pressed);
+	--p-tabs-tab-color: var(--color-dark-3);
+	--p-tabs-tab-hover-color: var(--color-landing-secondary-pressed);
+	--p-tabs-tab-active-color: var(--color-landing-secondary-pressed);
+	--p-tabs-tab-font-weight: 700;
+	--p-tabs-tab-padding: 14px 15.8px;
+	--p-tabs-transition-duration: .3s;
+	--p-tabs-tabpanel-padding: 12px 0 0 0;
+
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Message ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-message-success-simple-color: var(--color-success-hover);
+	--p-message-text-font-size: 12px;
+	--p-message-content-gap: 7px;
+
+	--p-message-secondary-outlined-color: var(--color-blue-light-2);
+	--p-message-secondary-outlined-border-color: var(--color-blue-light-2);
+	--p-message-outlined-border-width: 1px;
+	--p-message-border-radius: 12px;
+	--p-message-content-padding: 7px 10.5px;
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Tag ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-tag-padding: 3.5px 7px;
+	--p-tag-border-radius: 6px;
+	--p-tag-rounded-border-radius: 12px;
+	--p-tag-font-size: 12px;
+	
+	--p-tag-warn-background: var(--color-pink-light-2);
+	--p-tag-warn-color: var(--color-warn-hover);
+
+	--p-tag-danger-background: var(--color-pink-light-2);
+	--p-tag-danger-color: var(--color-danger);
+	--p-tag-danger-border-color: var(--color-light-1);
+
+	--p-tag-primary-background: var(--color-pink-light-2);
+	--p-tag-primary-color: var(--color-l-opressed);
+
+	--p-tag-success-background: var(--color-blue-light-4);
+	--p-tag-success-color: var(--color-success-hover);
+
+	--p-tag-info-background: var(--color-blue-light-4);
+	--p-tag-info-color: var(--color-info-hover);
+
+	--p-tag-secondary-background: var(--color-blue-light-4);
+	--p-tag-secondary-color: var(--color-blue-light-2);
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Avatar ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-avatar-background: var(--color-landing-secondary-hover);
+	--p-avatar-xl-width: 56px;
+	--p-avatar-xl-height: 56px;
+	--p-avatar-xl-font-size: 28px;
+	--p-avatar-color: white;
+
+	--p-avatar-width: 24px;
+	--p-avatar-height: 24px;
+	--p-avatar-font-size: 14px;
+	--p-avatar-border-radius: 14px;
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Fieldset ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-fieldset-background: white;
+	--p-fieldset-border-color: var(--color-invalid);
+	--p-fieldset-border-radius: 6px;
+	--p-fieldset-legend-border-radius: 6px;
+	--p-fieldset-padding: 0 15.75px 15.75px 15.75px; 
+	--p-fieldset-legend-padding: 7px 10.5px;
+	--p-fieldset-color: var(--color-blue-light-2);
+	--p-fieldset-legend-border-color: var(--color-invalid);
+	--p-fieldset-legend-border-width: 1px;
+	
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Chip ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-chip-background: var(--color-blue-light-4); 
+	--p-chip-padding-x: 10.5px;
+	--p-chip-padding-y: 7px;
+	--p-chip-border-radius: 16px;
+	--p-chip-color: var(--color-landing-secondary-hover);
+	--p-chip-gap: 7px;
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Badge ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-badge-font-size: 8.75px;
+	--p-badge-font-weight: 700;
+	--p-badge-min-width: 17.5px;
+	--p-badge-height: 17.5px;
+
+	--p-badge-secondary-background: var(--color-blue-light-3); 
+	--p-badge-secondary-color: var(--color-blue-light-2); 
+
+	--p-badge-primary-background: var(--color-l-opressed); 
+	--p-badge-primary-color: var(--color-white); 
+
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Datepicker ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-datepicker-panel-background: white;
+	--p-datepicker-input-icon-color: var(--color-blue-light-2);
+	--p-datepicker-date-selected-background: var(--color-blue-light-2);
+	--p-datepicker-date-hover-background: var(--color-blue-light-3);
+	--p-datepicker-date-selected-color: white;
+	--p-datepicker-panel-border-radius: 12px;
+	--p-datepicker-panel-border-color: var(--color-blu-light-1);
+	--p-datepicker-date-border-radius: 6px;
+	--p-datepicker-title-gap: 6px;
+	--p-datepicker-year-border-radius: 6px;
+	--p-datepicker-month-border-radius: 6px;
+	--p-datepicker-panel-padding: 6px 8px;
+	--p-datepicker-header-color: var(--color-blue-light-2);
+	--p-datepicker-week-day-color: var(--color-blue-light-2);
+
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------- Tooltip ----------------------------------------
+	// ----------------------------------------------------------------------------------------
+	--p-tooltip-background: var(--color-blue-light-2);
+	--p-tooltip-color: var(--color-blue-light-3);
+	--p-tooltip-padding: 4px 8px;
+	--p-tooltip-border-radius: 6px;
+	--p-tooltip-gutter: 6px;
+}
+
+html[lang='en'] {
+  	font-family: 'Switzer', sans-serif !important;
+}
+
+html[lang='ru'] {
+  	font-family: 'Switzer', sans-serif !important;
+}
+
+html[lang='fa'] {
+  	font-family: 'Vazirmatn', sans-serif !important;
+}
+
+html[lang='ar'] {
+  	font-family: 'Vazirmatn', sans-serif !important;
+}
+
+// ------------------------- [Animations] -------------------------
+.animated-top-to-bottom {
+    opacity: 0;
+    transform: translateY(-50px);
+    animation: slideDownFadeIn 1s ease-in-out forwards;
+    animation-delay: 0.1s;
+}
+
+.animated-description {
+    opacity: 0;
+    transform: translateX(-50px);
+    animation: slideLeftFadeIn 0.4s ease-in-out forwards;
+    animation-delay: 0.1s;
+}
+
+.animated-bottom-to-top {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUpFadeIn 1s ease-in-out forwards;
+    animation-delay: 0.2s;
+}
+
+.animated-bottom-to-top-slow {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUpFadeIn 0.4s ease-in-out forwards;
+    animation-delay: 0.5s;
+}
+
+.animated-center-to-top {
+	opacity: 0;
+	transform: translateY(0) scale(1.1);
+	animation: centerToTop 1s ease-out forwards;
+}
+
+.animated-slider {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUpFadeIn 0.4s ease-in-out forwards;
+    animation-delay: 0.6s;
+}
+
+.navbar-animation {
+  animation: slideDownFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes slideDownFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@keyframes slideUpFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDownFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideLeftFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes centerToTop {
+    0% {
+        opacity: 0;
+        transform: translateY(40vh);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body {
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+}

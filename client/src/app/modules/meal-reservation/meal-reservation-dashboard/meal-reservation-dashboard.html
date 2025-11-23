@@ -1,24 +1,9 @@
- 
-<div class="px-4 py-4 flex flex-wrap gap-3 justify-end">
-          <!-- ۱. مشاهده رزروها -->
-          <button 
-                  class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-3 rounded-xl font-medium transition flex items-center gap-2 shadow-md">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-            </svg>
-            مشاهده رزروها
-          </button>
+<div class="px-4 py-4 flex flex-wrap gap-3 justify-end max-w-100">
+    <!-- ۱. مشاهده رزروها -->
+    <div class="flex w-full gap-2">
+        <p-button label=" مشاهده رزروها" class="w-1/2" (click)="onTab('reserve')"/>
+        <p-button label="رزرو میهمان" class="w-1/2" (click)="onTab('guest')"/>
+    </div>
 
-          <!-- ۳. رزرو میهمان -->
-          <button 
-                  class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-medium transition flex items-center gap-2 shadow-md">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-            </svg>
-            رزرو میهمان
-          </button>
-        </div>
-<router-outlet></router-outlet>
-
+    <router-outlet></router-outlet>
+</div>

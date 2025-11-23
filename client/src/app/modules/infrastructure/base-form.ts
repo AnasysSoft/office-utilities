@@ -8,13 +8,15 @@ import { Subscription } from "rxjs";
 
 
 @Component({
-  selector: '',
-  template: '<div>base</div>',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+	selector: '',
+	template: '<div>base</div>',
+	imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class baseForm implements OnInit, OnDestroy {
-	protected entityForm: FormGroup;
+	protected entityForm: FormGroup | undefined;
 	private sub?: Subscription;
+	formErrors: any = {};
+	validationMessages: any;
 
 	_router = inject(Router);
 	_changeDetectorRef = inject(ChangeDetectorRef);
@@ -22,24 +24,41 @@ export class baseForm implements OnInit, OnDestroy {
 	_formBuilder = inject(FormBuilder);
 	_childActionService = inject(ChildActionService)
 	@Input() componentUniqueId: any;
-	
+
 	constructor() {
-		this.entityForm = this._formBuilder.group({}) 
+		this.initialForm();
 	}
 
-	ngOnInit(): void { 
+	initialForm() {
+		this.entityForm = this._formBuilder.group({});
+
+		/*this.validationMessages = {
+			age: {
+				required: 'error text ...',
+				pattern: 'error text ...',
+			},
+			price: {
+				'error text ...',
+				'error text ...',
+			}
+		};*/
+	}
+
+	ngOnInit(): void {
 		this.sub = this._childActionService.action$.subscribe(action => {
-		if(action.componentUniqueId == this.componentUniqueId)  this.onCallChildMethod(action.method, action.args);
+			if (action.componentUniqueId == this.componentUniqueId) this.onCallChildMethod(action.method, action.args);
 		});
 
+		this.entityForm?.valueChanges.subscribe(() => this.updateErrorMessages());
 		this.loadFormData();
 	}
 
 	ngOnDestroy() {
 		this.sub?.unsubscribe();
+
 	}
 
-	onCallChildMethod(method: MethodName, args: any[] = []) { 
+	onCallChildMethod(method: MethodName, args: any[] = []) {
 		const fn = this.functionMaps[method];
 		if (fn) {
 			fn(...args);
@@ -52,20 +71,20 @@ export class baseForm implements OnInit, OnDestroy {
 		this._childActionService.trigger(targetTadId, method, ...args);
 	}
 
- 	functionMaps: Record<MethodName, (...a: any[]) => void> = {
-      //refresh: () => this.refresh(),
-      //openModal: (id?: string) => this.openModal(id),
-      //resetForm: () => this.resetForm(),
-      // add more as needed
-    };
+	functionMaps: Record<MethodName, (...a: any[]) => void> = {
+		//refresh: () => this.refresh(),
+		//openModal: (id?: string) => this.openModal(id),
+		//resetForm: () => this.resetForm(),
+		// add more as needed
+	};
 
-    loadFormData() {
+	loadFormData() {
 
-    }
+	}
 
-    refreshFormData() {
-      this.loadFormData()
-    }
+	refreshFormData() {
+		this.loadFormData()
+	}
 
 	onNumberInput(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -79,4 +98,20 @@ export class baseForm implements OnInit, OnDestroy {
 			input.dispatchEvent(newEvent);
 		}
 	}
+
+	updateErrorMessages() {
+    this.formErrors = {};
+
+    for (const field in this.entityForm?.controls) {
+      this.formErrors[field] = '';
+      const control = this.entityForm?.get(field);
+
+      if ((control && control.dirty || control?.touched) && control.invalid) {
+        const messages = this.validationMessages[field];
+        for (const key in control.errors) {
+          this.formErrors[field] += messages[key] + ' ';
+        }
+      }
+    }
+  }
 }
