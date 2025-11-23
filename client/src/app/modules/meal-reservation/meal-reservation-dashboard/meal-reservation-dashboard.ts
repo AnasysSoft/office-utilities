@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -20,9 +20,12 @@ import { PtIcon } from '../../../shared/pt-icon/pt-icon';
 export class MealReservationDashboard {
 
   _router = inject(Router);
+  _activatedRoute = inject(ActivatedRoute);
+  activeTab: string  ='reserve';
 
   onTab(routeType: 'reserve' | 'guest') {
-    this._router.navigate([routeType]);
+    this.activeTab = routeType;
+    this._router.navigate([routeType], {relativeTo: this._activatedRoute});
   }
 
 }

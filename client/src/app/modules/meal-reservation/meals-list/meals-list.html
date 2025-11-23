@@ -1,7 +1,10 @@
-<div class="container max-w-3xl mx-auto p-6">
-    <h1 class="text-3xl font-bold text-center text-indigo-800 mb-8 mt-10">
-        تقویم 20 روز آینده
-    </h1>
 
-    <div id="daysList" class="bg-white rounded-2xl shadow-xl overflow-hidden"></div>
-</div>
+    <div class="flex font-bold text-center text-indigo-800 py-2 px-2 justify-between bg-black/15">
+        <div class="text-sm" (click)="goBack()">برگشت</div>
+       <span> {{selectedDay?.date | jdate:"YYYY/MM/DD"}}</span>
+       <span> {{selectedDay?.day }}</span>
+    </div>
+
+    <div id="daysList" class="" *ngFor="let item of items">
+        <span>{{item?.name}}</span>
+    </div>

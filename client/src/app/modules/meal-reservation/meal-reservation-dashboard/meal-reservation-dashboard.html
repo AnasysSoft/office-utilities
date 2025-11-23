@@ -1,9 +1,26 @@
-<div class="px-4 py-4 flex flex-wrap gap-3 justify-end max-w-100">
+<div class="flex flex-col gap-3 justify-end max-w-100">
     <!-- ۱. مشاهده رزروها -->
-    <div class="flex w-full gap-2">
-        <p-button label=" مشاهده رزروها" class="w-1/2" (click)="onTab('reserve')"/>
-        <p-button label="رزرو میهمان" class="w-1/2" (click)="onTab('guest')"/>
-    </div>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg max-w-100">
+        <div class="px-6 py-4 text-center text-xl ">
+            رزرو ناهار روزانه
+        </div>
+    </header>
+    <div class="h-6 bg-green-500">df</div>
 
-    <router-outlet></router-outlet>
+    <main class="flex-1 overflow-y-auto pb-20"> <!-- pb-20 برای فضای فوتر -->
+        <div class="py-6">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+
+
+<footer class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-300 shadow-2xl max-w-100">
+    <div class="grid grid-cols-2 gap-1 p-2">
+        <p-button label="مشاهده رزروها" icon="pi pi-calendar" class="w-full rounded-none  text-lg"
+            [outlined]="activeTab !== 'reserve'" severity="primary" (click)="onTab('reserve')" />
+
+        <p-button label="رزرو میهمان" icon="pi pi-user-plus" class="w-full rounded-none  text-lg"
+            [outlined]="activeTab !== 'guest'" severity="primary" (click)="onTab('guest')" />
+    </div>
+</footer>
 </div>

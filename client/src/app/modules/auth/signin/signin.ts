@@ -47,7 +47,7 @@ export class Signin extends baseForm {
   }
 
   login() {
-      this._router.navigate(['/rsv']);
+      this._router.navigate(['/rsv/reserve']);
   }
 
   togglePasswordVisibility() {
