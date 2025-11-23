@@ -1,6 +1,32 @@
-<p>guest-reservation works 1!</p>
-<p>guest-reservation works 2!</p>
-<p>guest-reservation works 3!</p>
-<p>guest-reservation works 4!</p>
-<p>guest-reservation works 5!</p>
-<p>guest-reservation works 6!</p>
+<form *ngIf="entityForm" [formGroup]="entityForm" (ngSubmit)="guestRezerve()" class="flex w-full flex-col items-start gap-3 p-2">
+    <p-iftalabel class="w-full">
+        <p-iconfield>
+            <p-inputicon>
+                <pt-icon name="envelope" />
+            </p-inputicon>
+            <input pInputText id="fullName" maxlength="6" [formControlName]="'fullName'" autocomplete="off"
+                placeholder="نام و نام خانوادگی میهمان خود را وارد نمایید" class="w-full" />
+            <label for="fullName">نام و نام خانوادگی</label>
+        </p-iconfield>
+    </p-iftalabel>
+    <small class="text-danger" *ngIf="formErrors.fullName">
+        {{ formErrors.fullName }}
+    </small>
+
+    <p-iftalabel class="w-full">
+        <p-iconfield>
+            <p-inputicon>
+                <pt-icon name="envelope" />
+            </p-inputicon>
+            <input pInputText id="date" maxlength="6" [formControlName]="'date'" autocomplete="off"
+                placeholder="تاریخ درخواست رزرو را وارد نمایید" class="w-full" />
+            <label for="date">تاریخ</label>
+        </p-iconfield>
+    </p-iftalabel>
+    <small class="text-danger" *ngIf="formErrors.date">
+        {{ formErrors.date }}
+    </small>
+
+
+    <p-button label="درخواست رزرو غذا" class="w-full" type="submit" [disabled]="entityForm.invalid || entityForm.pending"/>
+</form>
