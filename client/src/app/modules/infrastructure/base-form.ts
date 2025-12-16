@@ -13,7 +13,7 @@ import { Subscription } from "rxjs";
 	imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class baseForm implements OnInit, OnDestroy {
-	protected entityForm: FormGroup | undefined;
+	protected entityForm!: FormGroup;
 	private sub?: Subscription;
 	formErrors: any = {};
 	validationMessages: any;

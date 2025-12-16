@@ -1,48 +1,114 @@
-
-<div>
+<div class="min-h-screen flex flex-col sm:items-center sm:justify-center bg-surface sm:bg-background p-0 sm:p-4 relative overflow-hidden font-sans transition-colors duration-300" dir="rtl">
     
-<div class="flex flex-col justify-center h-screen
-            bg-gradient-to-b from-purple-400 via-purple-600 to-blue-500 
-            p-6  shadow-2xl max-w-100">
-    <div class="h-1/3">
+    <div class="hidden sm:block absolute top-[-10%] right-[-5%] w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-0 pointer-events-none"></div>
+    <div class="hidden sm:block absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-secondary/10 rounded-full blur-3xl -z-0 pointer-events-none"></div>
 
-    </div>
-    <div class="flex flex-col font-bold my-2 text-center">
-        <span>سامانه روزر غذا</span>
-        <span class="text-xs">پتروشیمی تبریز</span>
-    </div> 
-    <form *ngIf="entityForm" [formGroup]="entityForm" (ngSubmit)="login()">
-        <div class="flex w-full flex-col items-start gap-3">
-                        <p-iftalabel class="w-full">
-                            <p-iconfield>
-                                <p-inputicon>
-                                    <pt-icon name="envelope" />
-                                </p-inputicon>
-                                <input pInputText id="personnelCode" maxlength="6" [formControlName]="'personnelCode'" autocomplete="off" placeholder="شماره پرسنلی خود را وارد نمایید" class="w-full"/>
-                                <label for="personnelCode">کد پرسنلی</label>
-                            </p-iconfield>
-                        </p-iftalabel>
-                        <small class="text-danger" *ngIf="formErrors.personnelCode">
-                                {{ formErrors.personnelCode }}
-                            </small>
+    <div class="w-full h-full sm:h-auto sm:max-w-[420px] bg-surface sm:rounded-lg shadow-none sm:shadow-card p-6 sm:p-8 relative z-10 border-none sm:border sm:border-border/50 flex flex-col justify-center">
+        
+        <div class="text-center mb-8 sm:mb-8 mt-4 sm:mt-0">
+            <div class="inline-flex items-center justify-center w-20 h-20 sm:w-16 sm:h-16 bg-primary/10 text-primary rounded-full mb-4 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 sm:w-8 sm:h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2 7.5 1.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+                </svg>
+            </div>
+            <h1 class="text-2xl sm:text-2xl font-bold text-text-main mb-1">سامانه رزرو غذا</h1>
+            <p class="text-text-muted text-sm">پتروشیمی تبریز</p>
+        </div>
 
-                        <p-iftalabel class="w-full">
-                            <p-iconfield>
-                                <p-inputicon (click)="togglePasswordVisibility()">
-                                    <pt-icon [name]="passwordFieldType === 'password' ? 'eye' : 'eye-slash'" />
-                                </p-inputicon>
-                                <input pInputText id="password" [type]="passwordFieldType" maxlength="8" [formControlName]="'password'" autocomplete="off" placeholder="رمز خود را وارد نمایید" class="w-full"/>
-                                <label for="password">رمز ورود</label>
-                            </p-iconfield>
-                        </p-iftalabel>
-                        <small class="text-danger" *ngIf="formErrors.password">
-                                {{ formErrors.password }}
-                            </small>
-
-                        <p-button label="ورود" class="w-full" type="submit" [disabled]="entityForm.invalid || entityForm.pending"/>
+        <form [formGroup]="entityForm" (ngSubmit)="login()" class="space-y-5 sm:space-y-5 w-full">
+            
+            <div class="space-y-1.5">
+                <label for="pCode" class="block text-sm font-medium text-text-main">شماره پرسنلی</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-text-light group-focus-within:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                        </svg>
                     </div>
+                    <input 
+                        id="pCode"
+                        type="text" 
+                        inputmode="numeric"
+                        formControlName="personnelCode"
+                        class="block w-full rounded-md border-0 py-3.5 sm:py-3 pr-10 pl-3 text-text-main ring-1 ring-inset ring-border bg-background placeholder:text-text-light focus:ring-2 focus:ring-inset focus:ring-primary focus:bg-surface transition-all text-base sm:text-sm shadow-sm" 
+                        placeholder="مثال: 123456"
+                    >
+                </div>
+                <div *ngIf="entityForm.get('personnelCode')?.touched && entityForm.get('personnelCode')?.invalid" class="text-xs text-accent flex items-center gap-1 mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                    </svg>
+                    <span *ngIf="entityForm.get('personnelCode')?.hasError('required')">{{ validationMessages.personnelCode.required }}</span>
+                    <span *ngIf="entityForm.get('personnelCode')?.hasError('pattern')">{{ validationMessages.personnelCode.pattern }}</span>
+                    <span *ngIf="entityForm.get('personnelCode')?.hasError('minlength') || entityForm.get('personnelCode')?.hasError('maxlength')">{{ validationMessages.personnelCode.minlength }}</span>
+                </div>
+            </div>
 
-                     
-    </form>
-</div>
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <label for="password" class="block text-sm font-medium text-text-main">رمز عبور</label>
+                </div>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-text-light group-focus-within:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input 
+                        id="password"
+                        [type]="passwordFieldType" 
+                        formControlName="password"
+                        class="block w-full rounded-md border-0 py-3.5 sm:py-3 pr-10 pl-10 text-text-main ring-1 ring-inset ring-border bg-background placeholder:text-text-light focus:ring-2 focus:ring-inset focus:ring-primary focus:bg-surface transition-all text-base sm:text-sm shadow-sm" 
+                        placeholder="••••••••"
+                    >
+                    <button type="button" (click)="togglePasswordVisibility()" class="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted hover:text-text-main cursor-pointer focus:outline-none p-2">
+                        <svg *ngIf="passwordFieldType === 'text'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM22.676 12.553a11.249 11.249 0 0 1-2.631 4.31l-3.099-3.099a5.25 5.25 0 0 0-6.71-6.71L7.759 4.577a11.217 11.217 0 0 1 4.242-.827c4.97 0 9.185 3.223 10.675 7.69.105.316.286.749.286 1.113Zm-9.934 6.484a5.251 5.251 0 0 0 6.515-6.514l-6.515 6.514Z" />
+                        </svg>
+                        <svg *ngIf="passwordFieldType === 'password'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12 3.75s9.189 3.224 10.677 7.697c.492 1.478.492 3.066 0 4.544-1.488 4.473-5.705 7.697-10.677 7.697S2.811 19.673 1.323 15.199a9.859 9.859 0 0 1 0-4.544ZM12 16.5c2.485 0 4.5-2.015 4.5-4.5s-2.015-4.5-4.5-4.5-4.5 2.015-4.5 4.5 2.015 4.5 4.5 4.5Z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div *ngIf="entityForm.get('password')?.touched && entityForm.get('password')?.invalid" class="text-xs text-accent flex items-center gap-1 mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                    </svg>
+                    <span *ngIf="entityForm.get('password')?.hasError('required')">{{ validationMessages.password.required }}</span>
+                    <span *ngIf="entityForm.get('password')?.hasError('minlength')">{{ validationMessages.password.minlength }}</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-background p-3 rounded-md border border-border/60">
+                <input 
+                    id="isHuman" 
+                    type="checkbox" 
+                    formControlName="isHuman"
+                    class="h-5 w-5 rounded border-text-muted/30 text-primary focus:ring-primary/20 cursor-pointer"
+                >
+                <label for="isHuman" class="text-sm text-text-main cursor-pointer select-none">من ربات نیستم</label>
+            </div>
+
+            <button 
+                type="submit" 
+                [disabled]="entityForm.invalid"
+                class="w-full flex justify-center items-center py-3.5 sm:py-3 px-4 border border-transparent rounded-md shadow-sm text-base sm:text-sm font-bold text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all ease-spring active:scale-[0.98]"
+            >
+                ورود به سامانه
+            </button>
+            
+            <div class="text-center mt-4 pb-8 sm:pb-0">
+                <a href="#" class="text-xs font-medium text-text-muted hover:text-primary transition-colors">
+                    رمز عبور خود را فراموش کرده‌اید؟
+                </a>
+            </div>
+
+        </form>
+
+        <div class="sm:absolute bottom-4 left-0 right-0 text-center w-full text-xs text-text-muted/60 mt-auto sm:mt-0">
+            <!-- &copy; 1403 واحد انفورماتیک پتروشیمی تبریز -->
+        </div>
+    </div>
 </div>
