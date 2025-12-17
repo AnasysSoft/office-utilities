@@ -1,31 +1,31 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { IconField } from 'primeng/iconfield';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { InputIcon } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
 import { Icon } from '../../../shared/icon/icon';
 
 @Component({
-  selector: 'app-meal-reservation-dashboard',
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule, Icon, ButtonModule, FloatLabelModule, Checkbox, IftaLabelModule, InputTextModule, IconField, InputIcon],
+  selector: 'meal-reservation-dashboard',
+  imports: [RouterOutlet, CommonModule, ReactiveFormsModule, Icon],
   templateUrl: './meal-reservation-dashboard.html',
-  styleUrl: './meal-reservation-dashboard.scss'
+  styleUrl: './meal-reservation-dashboard.scss',
 })
-export class MealReservationDashboard {
+export class MealReservationDashboard implements OnInit {
+    private _router = inject(Router);
+    private _activatedRoute = inject(ActivatedRoute);
+    
+    currentDate: string = '';
 
-  _router = inject(Router);
-  _activatedRoute = inject(ActivatedRoute);
-  activeTab: string  ='reserve';
+    ngOnInit(): void {
+        this.calculateDate();
+    }
 
-  onTab(routeType: 'reserve' | 'guest') {
-    this.activeTab = routeType;
-    this._router.navigate([routeType], {relativeTo: this._activatedRoute});
-  }
+    navigateTo(path: 'list' | 'guest') {
+        this._router.navigate([path], { relativeTo: this._activatedRoute });
+    }
 
+    private calculateDate() {
+        const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+        this.currentDate = new Intl.DateTimeFormat('fa-IR', options).format(new Date());
+    }
 }
