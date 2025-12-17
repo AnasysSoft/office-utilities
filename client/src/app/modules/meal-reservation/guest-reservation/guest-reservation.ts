@@ -9,11 +9,11 @@ import { IconField } from 'primeng/iconfield';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputIcon } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { PtIcon } from '../../../shared/pt-icon/pt-icon';
+import { Icon } from '../../../shared/icon/icon';
 
 @Component({
   selector: 'app-guest-reservation',
-  imports: [CommonModule, ReactiveFormsModule, PtIcon, ButtonModule, FloatLabelModule, Checkbox, IftaLabelModule, InputTextModule, IconField, InputIcon],
+  imports: [CommonModule, ReactiveFormsModule, Icon, ButtonModule, FloatLabelModule, Checkbox, IftaLabelModule, InputTextModule, IconField, InputIcon],
   templateUrl: './guest-reservation.html',
   styleUrl: './guest-reservation.scss'
 })

@@ -9,11 +9,11 @@ import { IconField } from 'primeng/iconfield';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputIcon } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { PtIcon } from '../../../shared/pt-icon/pt-icon';
+import { Icon } from '../../../shared/icon/icon';
 
 @Component({
   selector: 'app-meal-reservation-dashboard',
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule, PtIcon, ButtonModule, FloatLabelModule, Checkbox, IftaLabelModule, InputTextModule, IconField, InputIcon],
+  imports: [RouterOutlet, CommonModule, ReactiveFormsModule, Icon, ButtonModule, FloatLabelModule, Checkbox, IftaLabelModule, InputTextModule, IconField, InputIcon],
   templateUrl: './meal-reservation-dashboard.html',
   styleUrl: './meal-reservation-dashboard.scss'
 })

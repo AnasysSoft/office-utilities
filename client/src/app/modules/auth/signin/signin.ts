@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { baseForm } from '../../infrastructure/base-form';
+import { Icon } from '../../../shared/icon/icon';
 
 @Component({
 	selector: 'app-signin',
-	imports: [CommonModule, ReactiveFormsModule],
+	imports: [CommonModule, ReactiveFormsModule, Icon],
 	templateUrl: './signin.html',
 	styleUrl: './signin.scss'
 })
