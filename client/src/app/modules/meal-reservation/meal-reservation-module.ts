@@ -6,6 +6,7 @@ import { MealSelection } from './meal-selection/meal-selection';
 import { MealsList } from './meals-list/meals-list';
 import { GuestReservation } from './guest-reservation/guest-reservation';
 import { DailyMenuManagement } from '../admin/daily-menu-management/daily-menu-management';
+import { DailyReservationsList } from '../admin/daily-reservations-list/daily-reservations-list';
 
 const routes: Routes = [
   {path: '', component: MealReservationDashboard, 
@@ -14,6 +15,7 @@ const routes: Routes = [
         {path: 'guest', component: GuestReservation},
         {path: 'list', component: MealsList},
         { path: 'admin/daily-menu', component: DailyMenuManagement },
+        { path: 'admin/daily-reservations', component: DailyReservationsList },
         {path: '**', component: MealSelection},
     ]}, 
    // {path: 'list', component: MealsList} 

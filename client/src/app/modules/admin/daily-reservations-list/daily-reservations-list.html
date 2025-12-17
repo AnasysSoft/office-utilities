@@ -1,0 +1,73 @@
+<div class="flex flex-col h-full bg-background animate-fade-in pb-10">
+    
+    <div class="flex items-center gap-3 p-4 border-b border-border/50 sticky top-0 bg-surface/90 backdrop-blur z-20">
+        <button (click)="goBack()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <icon name="arrow-right" className="w-5 h-5 text-text-muted"></icon>
+        </button>
+        <div>
+            <h2 class="text-lg font-bold text-text-main">لیست رزروها</h2>
+            <span class="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md mt-1 inline-block">
+                {{ persianDateLabel }}
+            </span>
+        </div>
+    </div>
+
+    <div class="p-4 md:p-6 flex flex-col gap-4">
+        
+        <div class="flex gap-3 overflow-x-auto pb-2">
+            <div class="flex-1 min-w-[140px] bg-surface border border-border rounded-xl p-3 flex flex-col items-center justify-center shadow-sm">
+                <span class="text-2xl font-black text-primary">{{ reservations.length }}</span>
+                <span class="text-[10px] text-text-muted">کل سفارشات</span>
+            </div>
+            </div>
+
+        @if (reservations.length === 0) {
+            <div class="flex flex-col items-center justify-center py-10 opacity-50">
+                <icon name="clipboard-document-list" className="w-12 h-12 text-text-muted mb-2"></icon>
+                <span class="text-sm font-bold text-text-muted">هنوز سفارشی ثبت نشده است</span>
+            </div>
+        } @else {
+            <div class="flex flex-col gap-3">
+                @for (res of reservations; track res.id) {
+                    <div (click)="toggleApproval(res)"
+                         class="group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none bg-surface"
+                         [ngClass]="res.isApproved ? 'border-green-500 shadow-sm' : 'border-border hover:border-primary/50'">
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold bg-gray-100 text-text-muted shrink-0">
+                                {{ res.userName.charAt(0) }}
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-text-main group-hover:text-primary transition-colors">
+                                    {{ res.userName }}
+                                </span>
+                                <span class="text-[10px] text-text-muted">{{ res.personnelCode }}</span>
+                                
+                                <div class="flex items-center gap-1 mt-1 text-xs">
+                                    <span class="font-medium text-text-main">{{ res.foodName }}</span>
+                                    @if (res.sideName) {
+                                        <span class="text-text-muted/60">+</span>
+                                        <span class="text-text-muted">{{ res.sideName }}</span>
+                                    }
+                                    @if (res.quantity > 1) {
+                                        <span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-bold mr-1">
+                                            {{ res.quantity }}x
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300"
+                             [ngClass]="res.isApproved ? 'bg-green-500 border-green-500 scale-110' : 'border-border group-hover:border-primary bg-white'">
+                            <icon *ngIf="res.isApproved" name="check" className="w-4 h-4 text-white animate-fade-in"></icon>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</div>

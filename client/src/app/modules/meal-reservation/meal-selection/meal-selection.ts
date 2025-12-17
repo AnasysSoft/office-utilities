@@ -40,11 +40,15 @@ export class MealSelection implements OnInit {
 
 	weeks: WeekGroup[] = [];
 	currentWeekIndex: number = 0;
-	isAdminMode = false;
+
+	currentMode: 'user' | 'admin' | 'reservations' = 'user';
 
 	ngOnInit() {
 		this._route.queryParams.subscribe(params => {
-            this.isAdminMode = params['mode'] === 'admin';
+            const mode = params['mode'];
+            if (mode === 'admin') this.currentMode = 'admin';
+            else if (mode === 'reservations') this.currentMode = 'reservations';
+            else this.currentMode = 'user';
         });
 
 		this.generateWeeks();
@@ -122,21 +126,20 @@ export class MealSelection implements OnInit {
 	}
 
 	onSelectDay(day: CalendarDay) {
-		if (day.isHoliday || day.isPast) return;
+        if (day.isHoliday || day.isPast) return;
 
-		if (this.isAdminMode) {
-			this._router.navigate(['../admin/daily-menu'], {
-				relativeTo: this._route,
-				queryParams: { date: day.dateIso, persianDate: day.fullDate }
-			});
-			
-		} else {
-			this._router.navigate(['../list'], {
-				relativeTo: this._route,
-				queryParams: { date: day.dateIso, persianDate: day.fullDate }
-			});
-		}
-	}
+        const queryParams = { date: day.dateIso, persianDate: day.fullDate };
+
+        if (this.currentMode === 'admin') {
+            this._router.navigate(['../admin/daily-menu'], { relativeTo: this._route, queryParams });
+        
+        } else if (this.currentMode === 'reservations') {
+            this._router.navigate(['../admin/daily-reservations'], { relativeTo: this._route, queryParams });
+        
+        } else {
+            this._router.navigate(['../list'], { relativeTo: this._route, queryParams });
+        }
+    }
 
 	nextWeek() {
 		if (this.currentWeekIndex < this.weeks.length - 1) {

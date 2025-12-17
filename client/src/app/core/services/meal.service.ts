@@ -8,6 +8,17 @@ export interface DayReservation {
 	quantity: number;
 }
 
+export interface UserDailyReservation {
+	id: number;
+	userId: string;
+	userName: string;
+	personnelCode: string;
+	foodName: string;
+	sideName?: string;
+	quantity: number;
+	isApproved: boolean;
+}
+
 export interface DailyMenuStatus {
 	dateIso: string;
 	isMenuSet: boolean;
@@ -23,6 +34,12 @@ export class MealService {
 
 	private dailyMenus = signal<Map<string, DailyMenuStatus>>(new Map());
 
+	private dailyUserReservations = signal<Map<string, UserDailyReservation[]>>(new Map());
+
+	constructor() {
+		this.seedMockData();
+	}
+
 	setReservation(dateIso: string, foodName: string, mainId: number, sideId: number | null, quantity: number) {
 		this.reservations.update((map) => {
 			const newMap = new Map(map);
@@ -33,6 +50,39 @@ export class MealService {
 					selectedSideId: sideId || undefined,
 					quantity: quantity 
 				});
+			return newMap;
+		});
+	}
+
+	private seedMockData() {
+		const today = new Date().toISOString().split('T')[0];
+		const mockData: UserDailyReservation[] = [
+		{ id: 1, userId: 'u1', userName: 'علی محمدی', personnelCode: '123456', foodName: 'چلو کباب', sideName: 'نوشابه', quantity: 1, isApproved: false },
+		{ id: 2, userId: 'u2', userName: 'سارا احمدی', personnelCode: '654321', foodName: 'زرشک پلو', sideName: 'دوغ', quantity: 2, isApproved: true },
+		{ id: 3, userId: 'u3', userName: 'رضا کمالی', personnelCode: '987654', foodName: 'قورمه سبزی', quantity: 1, isApproved: false },
+		];
+		
+		this.dailyUserReservations.update(map => {
+			const newMap = new Map(map);
+			newMap.set(today, mockData); 
+			return newMap;
+		});
+	}
+
+	getDailyUserReservations(dateIso: string): UserDailyReservation[] {
+		return this.dailyUserReservations().get(dateIso) || [];
+	}
+
+	toggleReservationApproval(dateIso: string, reservationId: number) {
+		this.dailyUserReservations.update((map) => {
+			const newMap = new Map(map);
+			const list = newMap.get(dateIso) || [];
+			
+			const updatedList = list.map(item => 
+				item.id === reservationId ? { ...item, isApproved: !item.isApproved } : item
+			);
+			
+			newMap.set(dateIso, updatedList);
 			return newMap;
 		});
 	}

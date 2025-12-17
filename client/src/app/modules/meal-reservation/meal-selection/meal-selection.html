@@ -4,19 +4,19 @@
         <div>
             <h2 class="text-xl font-bold text-text-main flex items-center gap-2">
                 <div class="p-2 rounded-lg"
-                     [ngClass]="isAdminMode ? 'bg-red-50' : 'bg-primary/10'">
-                    @if (isAdminMode) {
+                     [ngClass]="currentMode === 'admin' ? 'bg-red-50' : 'bg-primary/10'">
+                    @if (currentMode === 'admin') {
                         <icon name="cog-6-tooth" className="w-6 h-6 text-red-500"></icon>
                     } @else {
                         <icon name="calendar-days" className="w-6 h-6 text-primary"></icon>
                     }
                 </div>
                 <span>
-                    {{ isAdminMode ? 'مدیریت برنامه غذایی' : 'برنامه غذایی' }}
+                    {{ currentMode === 'admin' ? 'مدیریت برنامه غذایی' : 'برنامه غذایی' }}
                 </span>
             </h2>
             <p class="text-xs text-text-muted mt-1 opacity-80 hidden md:block mr-12">
-                {{ isAdminMode ? 'روز مورد نظر را برای تنظیم منو انتخاب کنید' : 'برنامه ۴ هفته آینده را مدیریت کنید' }}
+                {{ currentMode === 'admin' ? 'روز مورد نظر را برای تنظیم منو انتخاب کنید' : 'برنامه ۴ هفته آینده را مدیریت کنید' }}
             </p>
         </div>
         
@@ -125,7 +125,7 @@
                             <div class="h-[44px] xl:h-[50px] shrink-0 w-full mt-auto flex items-center justify-center border-t transition-colors duration-300 px-2 text-center relative overflow-hidden"
                                  [ngClass]="{
                                     'border-border/30 bg-primary/5 group-hover:border-primary': !day.selectedFood && !day.isHoliday && !day.isPast,
-                                    'group-hover:bg-primary group-hover:border-primary': !day.isMenuSet,
+                                    'group-hover:bg-primary group-hover:border-primary': !day.isMenuSet && !day.isPast && !day.isHoliday && !day.selectedFood,
                                     'bg-primary/10 border-primary/20': day.selectedFood && !day.isPast,
                                     'border-accent/10 bg-accent/5': day.isHoliday && !day.isPast,
                                     'border-transparent bg-transparent': day.isPast
@@ -139,7 +139,7 @@
                                     <div class="text-[10px] text-accent font-bold">تعطیل رسمی</div>
                                 }
 
-                                @else if (isAdminMode) {
+                                @else if (currentMode === 'admin') {
                                     
                                     @if (day.isMenuSet) {
                                         <div class="flex flex-col items-center justify-center gap-0.5 w-full animate-fade-in">

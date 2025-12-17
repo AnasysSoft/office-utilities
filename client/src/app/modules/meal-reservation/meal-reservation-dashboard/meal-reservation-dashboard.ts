@@ -55,6 +55,14 @@ export class MealReservationDashboard implements OnInit {
         }
     }
 
+    navigateToReservationsReview() {
+        this.isAdminDropdownOpen = false;
+        this._router.navigate(['reserve'], { 
+            relativeTo: this._activatedRoute,
+            queryParams: { mode: 'reservations' }
+        });
+    }
+
     private calculateDate() {
         const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
         this.currentDate = new Intl.DateTimeFormat('fa-IR', options).format(new Date());
