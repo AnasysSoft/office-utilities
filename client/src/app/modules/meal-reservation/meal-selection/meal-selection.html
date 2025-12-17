@@ -1,29 +1,104 @@
-<div *ngFor="let day of days; let i = index" class="flex items-center justify-between py-2 px-2 border-b border-gray-200  
-            transition-all duration-300 transform
-            hover:bg-gradient-to-l hover:from-pink-50 hover:to-rose-50
-            active:scale-98 active:translate-x-8" [class.bg-gradient-to-l]="day.isToday"
-  [class.from-pink-100]="day.isToday" [class.to-rose-100]="day.isToday" [class.border-r-4]="day.isToday"
-  [class.border-rose-500]="day.isToday">
-
-  <div class="absolute inset-0 bg-white/30 pointer-events-none 
-              translate-x-full transition-transform duration-500" [class.-translate-x-full]="selectedDay === day">
-  </div>
-
-  <div class="flex items-center space-x-reverse ">
-    <div class="text-right hover:cursor-pointer" (click)="selectItem(day)">
-      <span class=" text-landing-secondary/85 ">{{ day.date | jdate:"YYYY/MM/DD" }} </span>
-      <span *ngIf="!day.isToday" class="text-sm text-blue-light-3 bg-black/50 rounded-xl px-2 py-1">{{ day.day }}
-      </span>
-      <span *ngIf="day.isToday" class="text-sm text-rose-600 font-bold px-2 py-1">امروز </span>
-    </div>
-  </div>
-
-  <div class="flex">
-    <div class="flex items-center space-x-reverse font-bold ">
-      {{ day.meal }}
+<div class="flex flex-col gap-6 animate-fade-in">
+    
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-bold text-text-main">برنامه غذایی</h2>
+            <p class="text-xs text-text-muted mt-1">لطفاً غذای روزهای آینده را رزرو کنید</p>
+        </div>
+        <div class="hidden sm:flex items-center gap-4 text-xs">
+            <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+                <span class="text-text-muted">رزرو شده</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-border border border-text-muted/30"></span>
+                <span class="text-text-muted">خالی</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full border border-dashed border-text-muted/50 bg-gray-50"></span>
+                <span class="text-text-muted">تعطیل</span>
+            </div>
+        </div>
     </div>
 
-    <i class="pi pi-chevron-left text-blue-600 opacity-0 transition-opacity 
-            mr-2" [class.opacity-100]="selectedDay === day"></i>
-  </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        
+        <div *ngFor="let day of days; let i = index" 
+             (click)="onSelectDay(day)"
+             class="group relative overflow-hidden rounded-xl transition-all duration-300 ease-spring"
+             [ngClass]="{
+                'bg-surface border border-border hover:border-primary/50 hover:shadow-lg hover:-translate-y-1 cursor-pointer': !day.isHoliday && !day.selectedFood,
+                'bg-primary/5 border border-primary/30 hover:shadow-lg cursor-pointer': day.selectedFood,
+                'bg-gray-50/50 border-2 border-dashed border-border/60 cursor-not-allowed': day.isHoliday
+             }">
+            
+            <div *ngIf="day.isHoliday" class="absolute -bottom-4 -left-4 text-text-muted/5 rotate-12 pointer-events-none">
+                <icon name="lock-closed" className="w-24 h-24"></icon>
+            </div>
+
+            <div *ngIf="i === 0" class="absolute top-0 left-3 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-b-md shadow-sm z-10">
+                امروز
+            </div>
+
+            <div class="p-4 flex items-center justify-between gap-4 relative z-10">
+                
+                <div class="flex flex-col items-center justify-center rounded-lg w-16 h-16 shrink-0 transition-colors"
+                     [ngClass]="{
+                        'bg-background/60 border border-border/50': !day.isHoliday,
+                        'bg-white text-primary shadow-sm': day.selectedFood,
+                        'bg-transparent border border-text-muted/20 grayscale opacity-70': day.isHoliday
+                     }">
+                    <span class="text-sm font-bold" 
+                          [ngClass]="day.isHoliday ? 'text-text-muted' : 'text-text-main'">
+                        {{ day.dayName }}
+                    </span>
+                    <span class="text-[10px] text-text-muted font-medium mt-0.5 dir-ltr">
+                        {{ day.fullDate }}
+                    </span>
+                </div>
+
+                <div class="flex-1 flex flex-col items-start justify-center min-w-0">
+                    
+                    <ng-container *ngIf="!day.selectedFood && !day.isHoliday">
+                        <span class="text-sm font-bold text-text-main group-hover:text-primary transition-colors">انتخاب غذا</span>
+                        <div class="flex items-center gap-1 mt-1 text-xs text-text-muted/70 group-hover:text-primary/70">
+                            <icon name="plus-circle" className="w-3.5 h-3.5"></icon>
+                            <span>برای رزرو کلیک کنید</span>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="day.selectedFood">
+                        <span class="text-sm font-bold text-primary truncate w-full text-right line-clamp-1">
+                            {{ day.selectedFood }}
+                        </span>
+                        <div class="flex items-center gap-1 mt-1 text-xs text-secondary-dark font-medium bg-secondary/10 px-2 py-0.5 rounded-full">
+                            <icon name="check-circle" className="w-3.5 h-3.5"></icon>
+                            <span>ثبت شده</span>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="day.isHoliday">
+                        <span class="text-sm font-bold text-text-muted">تعطیل</span>
+                        <div class="flex items-center gap-1 mt-1 text-[10px] text-accent/80 font-medium bg-accent/5 px-2 py-0.5 rounded-md">
+                            <icon name="no-symbol" className="w-3 h-3"></icon>
+                            <span>سلف سرویس بسته است</span>
+                        </div>
+                    </ng-container>
+
+                </div>
+
+                <div *ngIf="!day.isHoliday" class="text-text-light group-hover:text-primary transition-colors">
+                    <icon name="chevron-left" className="w-5 h-5"></icon>
+                </div>
+
+            </div>
+            
+            <div *ngIf="day.selectedFood" class="absolute bottom-0 left-0 right-0 h-1 bg-primary"></div>
+        </div>
+
+    </div>
+
+    <div *ngIf="days.length === 0" class="text-center py-10 text-text-muted">
+        درحال بارگذاری تقویم...
+    </div>
 </div>

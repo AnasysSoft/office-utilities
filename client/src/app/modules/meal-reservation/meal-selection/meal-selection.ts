@@ -1,65 +1,68 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import moment from 'jalali-moment';
-import { JalaliDatePipe } from '../../../core/pipes/jalali-date';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../core/user/user-service';
+import { Router } from '@angular/router';
+import { MealService } from '../../../core/services/meal.service';
+import { Icon } from '../../../shared/icon/icon';
 
-
-type DayInfo = {
-  isToday: boolean,
-  date: Date;
-  jalaliDate: string;
-  day: string;      // نام روز به پارسی
-  meal: string; // نام وعده غذایی (می‌تونی تغییر بدهی)
-  canReserve: boolean,
-  selectedMeals?: ({id: number, name: string})[]
-};
-
-
-@Component({
-  selector: 'app-meal-selection',
-  imports: [CommonModule, JalaliDatePipe],
-  templateUrl: './meal-selection.html',
-  styleUrl: './meal-selection.scss'
-})
-export class MealSelection {
-
-  days: (DayInfo)[] = [];
-  selectedDay: any;
-
-  _activatedRoute = inject(ActivatedRoute);
-  _router = inject(Router);
-  _userService = inject(UserService);
-
-  constructor() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0)
-
-    for (let index = 0; index < 20; index++) {
-      const currentDate = new Date(today);
-      currentDate.setDate(today.getDate() + index);
-
-      const jMoment = moment(currentDate).locale('fa').format('D MMMM YYYY'); // برای محاسبه دقیق
-      const dayName = moment(currentDate).locale('fa').format('dddd');
-
-      // if(index != 3)
-      this.days.push({ date: currentDate, jalaliDate: jMoment, day: dayName, meal: 'چلو کباب', isToday: index === 0, canReserve: index != 3 })
-    }
-  }
-
-  selectItem(dayInfo: DayInfo) {
-    this.selectedDay = dayInfo;
-
-    this._router.navigate(['rsv/list'], {
-       
-      state: {
-        day: dayInfo
-      }
-    });
-  }
-
-
+interface CalendarDay {
+	dateObj: Date;
+	dateIso: string;
+	dayName: string;
+	fullDate: string;
+	isHoliday: boolean;
+	selectedFood?: string;
 }
 
+@Component({
+  selector: 'meal-selection',
+  imports: [CommonModule, Icon],
+  templateUrl: './meal-selection.html',
+  styleUrl: './meal-selection.scss',
+})
+export class MealSelection {
+	private _router = inject(Router);
+	private _mealService = inject(MealService);
 
+	days: CalendarDay[] = [];
+
+	ngOnInit() {
+		this.generateDays();
+	}
+
+	generateDays() {
+		const today = new Date();
+		const formatterDay = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' });
+		const formatterDate = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+		for (let i = 0; i < 20; i++) {
+			const date = new Date(today);
+			date.setDate(today.getDate() + i);
+
+			const dateIso = date.toISOString().split('T')[0];
+			
+			const reserved = this._mealService.getReservation(dateIso);
+
+			const isFriday = date.getDay() === 5; 
+
+			this.days.push({
+				dateObj: date,
+				dateIso: dateIso,
+				dayName: formatterDay.format(date),
+				fullDate: formatterDate.format(date),
+				isHoliday: isFriday,
+				selectedFood: reserved?.selectedFoodName
+			});
+		}
+	}
+
+	onSelectDay(day: CalendarDay) {
+		if (day.isHoliday) return;
+
+		this._router.navigate(['/rsv/list'], { 
+			queryParams: { 
+				date: day.dateIso, 
+				persianDate: day.fullDate 
+			} 
+		});
+	}
+}
