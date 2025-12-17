@@ -20,7 +20,7 @@ export class MealReservationDashboard implements OnInit {
         this.calculateDate();
     }
 
-    navigateTo(path: 'list' | 'guest') {
+    navigateTo(path: 'reserve' | 'guest') {
         this._router.navigate([path], { relativeTo: this._activatedRoute });
     }
 

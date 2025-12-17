@@ -15,6 +15,7 @@ interface CalendarDay {
 	isPast: boolean;
 	isToday: boolean;
 	selectedFood?: string;
+	quantity: number;
 }
 
 interface WeekGroup {
@@ -84,6 +85,7 @@ export class MealSelection implements OnInit {
 					isPast: isPast,
 					isToday: isToday,
 					selectedFood: reserved?.selectedFoodName,
+					quantity: reserved?.quantity || 0,
 				});
 
 				startPointer.setDate(startPointer.getDate() + 1);

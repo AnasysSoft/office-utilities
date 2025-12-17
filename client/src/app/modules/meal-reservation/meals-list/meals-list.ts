@@ -6,16 +6,16 @@ import { ToastService } from '../../../core/services/toast.service';
 import { Icon } from '../../../shared/icon/icon';
 
 interface SimpleMeal {
-	id: number;
-	name: string;
-	type: 'main' | 'side';
+  id: number;
+  name: string;
+  type: 'main' | 'side';
 }
 
 @Component({
   selector: 'app-meals-list',
   imports: [CommonModule, Icon],
   templateUrl: './meals-list.html',
-  styleUrl: './meals-list.scss'
+  styleUrl: './meals-list.scss',
 })
 export class MealsList implements OnInit {
 	private _route = inject(ActivatedRoute);
@@ -44,13 +44,18 @@ export class MealsList implements OnInit {
 
 	selectedMainId: number | null = null;
 	selectedSideId: number | null = null;
+	quantity: number = 1;
 
 	ngOnInit() {
-		this._route.queryParams.subscribe(params => {
-			this.targetDate = params['date'];
-			this.persianDateLabel = params['persianDate'];
-			const existing = this._mealService.getReservation(this.targetDate);
-			if (existing && existing.selectedFoodId) {
+		this._route.queryParams.subscribe((params) => {
+		this.targetDate = params['date'];
+		this.persianDateLabel = params['persianDate'];
+
+		const existing = this._mealService.getReservation(this.targetDate);
+			if (existing) {
+				this.selectedMainId = existing.selectedFoodId || null;
+				this.selectedSideId = existing.selectedSideId || null;
+				this.quantity = existing.quantity || 1;
 			}
 		});
 	}
@@ -69,21 +74,62 @@ export class MealsList implements OnInit {
 		this.saveReservation();
 	}
 
-	private saveReservation() {
-		const mainName = this.mainCourses.find(m => m.id === this.selectedMainId)?.name || '';
-		const sideName = this.sideDishes.find(s => s.id === this.selectedSideId)?.name || '';
+updateQuantity(delta: number) {
+    const newQty = this.quantity + delta;
+    if (newQty >= 1) {
+      this.quantity = newQty;
+    }
+  }
 
-		let displayName = mainName;
-		if (sideName && sideName !== 'بدون نوشیدنی/دسر') {
-			displayName += ` + ${sideName}`;
-		}
+  // تغییر تعداد با تایپ کردن
+  // فقط عدد را تغییر می‌دهد، ذخیره نمی‌کند
+  onQuantityInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let val = parseInt(input.value);
 
-		this._mealService.setReservation(this.targetDate, displayName, this.selectedMainId || 0);
-		
-		this._toastService.show(
-			'عملیات موفق',
-			'انتخاب‌های شما با موفقیت در سیستم ثبت شد.',
-			'success'
-		);
-	}
+    if (isNaN(val) || val < 1) {
+      val = 1;
+    }
+    if (val > 99) val = 99; // محدودیت نمایشی
+
+    this.quantity = val;
+  }
+
+  // متد جدید: فقط وقتی دکمه ثبت زده شد اجرا می‌شود
+  confirmSelection() {
+    // بررسی اینکه آیا غذای اصلی انتخاب شده است؟
+    if (!this.selectedMainId) {
+        this._toastService.show('خطا', 'لطفاً ابتدا یک غذای اصلی انتخاب کنید.', 'warning');
+        return;
+    }
+
+    this.saveReservation();
+  }
+
+  private saveReservation() {
+    const mainName = this.mainCourses.find(m => m.id === this.selectedMainId)?.name || '';
+    const sideName = this.sideDishes.find(s => s.id === this.selectedSideId)?.name || '';
+
+    let displayName = mainName;
+    if (sideName && sideName !== 'بدون نوشیدنی/دسر') {
+      displayName += ` + ${sideName}`;
+    }
+
+    this._mealService.setReservation(
+        this.targetDate, 
+        displayName, 
+        this.selectedMainId || 0, 
+        this.selectedSideId, 
+        this.quantity
+    );
+    
+    this._toastService.show(
+      'ثبت شد',
+      `سفارش شما (${this.quantity} پرس) با موفقیت ذخیره شد.`,
+      'success'
+    );
+    
+    // اختیاری: بعد از ثبت برگردد عقب
+    // setTimeout(() => this.goBack(), 1000); 
+  }
 }

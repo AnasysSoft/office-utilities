@@ -1,11 +1,11 @@
 <div class="flex flex-col h-full bg-background relative overflow-hidden animate-fade-in">
+
     <div class="flex items-center justify-between p-4 shrink-0 bg-surface/80 backdrop-blur-md sticky top-0 z-20 border-b border-border/50">
         <div class="flex items-center gap-3">
             <button (click)="goBack()" 
                     class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 transition-all active:scale-95 shadow-sm cursor-pointer">
                 <icon name="arrow-right" className="w-5 h-5"></icon>
             </button>
-            
             <div class="flex flex-col">
                 <h2 class="text-lg font-bold text-text-main leading-none">منوی رزرو</h2>
                 <div class="flex items-center gap-1.5 mt-1 text-xs text-text-muted">
@@ -14,10 +14,9 @@
                 </div>
             </div>
         </div>
-        
-        </div>
+    </div>
 
-    <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-24">
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 pb-28 min-h-0">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
             
@@ -31,7 +30,6 @@
                         <p class="text-[11px] text-text-muted">لطفاً یک گزینه انتخاب کنید</p>
                     </div>
                 </div>
-
                 <div class="flex flex-col gap-3">
                     @for (meal of mainCourses; track meal.id) {
                         <div (click)="selectMain(meal)"
@@ -40,23 +38,17 @@
                                 'border-primary bg-primary/5 shadow-sm': selectedMainId === meal.id,
                                 'border-transparent bg-surface hover:border-border shadow-sm hover:shadow-md': selectedMainId !== meal.id
                              }">
-                            
                             <div class="flex items-center gap-3 z-10 flex-1">
                                 <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0"
-                                     [ngClass]="{
-                                        'border-primary': selectedMainId === meal.id,
-                                        'border-text-muted/40 group-hover:border-primary/50': selectedMainId !== meal.id
-                                     }">
+                                     [ngClass]="selectedMainId === meal.id ? 'border-primary' : 'border-text-muted/40 group-hover:border-primary/50'">
                                     <div class="w-2.5 h-2.5 rounded-full bg-primary transition-transform duration-200"
                                          [ngClass]="selectedMainId === meal.id ? 'scale-100' : 'scale-0'"></div>
                                 </div>
-
                                 <span class="font-bold text-sm transition-colors line-clamp-1"
                                       [ngClass]="selectedMainId === meal.id ? 'text-primary' : 'text-text-main'">
                                     {{ meal.name }}
                                 </span>
                             </div>
-
                             @if (selectedMainId === meal.id) {
                                 <div class="w-8 h-8 flex items-center justify-center text-primary bg-white/60 rounded-full shadow-sm animate-fade-in shrink-0">
                                     <icon name="check" className="w-5 h-5"></icon>
@@ -77,7 +69,6 @@
                         <p class="text-[11px] text-text-muted">انتخاب نوشیدنی یا دسر (اختیاری)</p>
                     </div>
                 </div>
-
                 <div class="flex flex-col gap-3">
                     @for (side of sideDishes; track side.id) {
                         <div (click)="selectSide(side)"
@@ -86,23 +77,17 @@
                                 'border-secondary bg-secondary/5 shadow-sm': selectedSideId === side.id,
                                 'border-transparent bg-surface hover:border-border shadow-sm hover:shadow-md': selectedSideId !== side.id
                              }">
-                            
                             <div class="flex items-center gap-3 z-10 flex-1">
                                 <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0"
-                                     [ngClass]="{
-                                        'border-secondary': selectedSideId === side.id,
-                                        'border-text-muted/40 group-hover:border-secondary/50': selectedSideId !== side.id
-                                     }">
+                                     [ngClass]="selectedSideId === side.id ? 'border-secondary' : 'border-text-muted/40 group-hover:border-secondary/50'">
                                     <div class="w-2.5 h-2.5 rounded-full bg-secondary transition-transform duration-200"
                                          [ngClass]="selectedSideId === side.id ? 'scale-100' : 'scale-0'"></div>
                                 </div>
-
                                 <span class="font-bold text-sm transition-colors line-clamp-1"
                                       [ngClass]="selectedSideId === side.id ? 'text-secondary-dark' : 'text-text-main'">
                                     {{ side.name }}
                                 </span>
                             </div>
-
                              @if (selectedSideId === side.id) {
                                 <div class="w-8 h-8 flex items-center justify-center text-secondary-dark bg-white/60 rounded-full shadow-sm animate-fade-in shrink-0">
                                     <icon name="check" className="w-5 h-5"></icon>
@@ -114,6 +99,42 @@
             </section>
 
         </div>
+    </div>
 
+    <div class="fixed bottom-0 left-0 right-0 z-30 bg-surface border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-4 py-3 md:py-4 animate-slide-up">
+        <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] text-text-muted font-bold mr-1">تعداد پرس:</span>
+                
+                <div class="flex items-center bg-background rounded-xl border border-border h-11 w-32 shadow-sm">
+                    <button (click)="updateQuantity(-1)" 
+                            [disabled]="quantity <= 1"
+                            class="w-10 h-full flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-gray-100 active:bg-gray-200 transition-colors rounded-r-xl disabled:opacity-30 disabled:cursor-not-allowed">
+                        <icon name="minus" className="w-4 h-4"></icon>
+                    </button>
+
+                    <div class="flex-1 h-full border-x border-border/40 relative">
+                        <input type="number" 
+                               [value]="quantity"
+                               (input)="onQuantityInput($event)"
+                               class="absolute inset-0 w-full h-full text-center font-black text-lg text-text-main bg-transparent border-none focus:ring-0 p-0 appearance-none outline-none tabular-nums">
+                    </div>
+
+                    <button (click)="updateQuantity(1)" 
+                            class="w-10 h-full flex items-center justify-center text-primary hover:bg-primary/5 active:bg-primary/10 transition-colors rounded-l-xl">
+                        <icon name="plus" className="w-4 h-4"></icon>
+                    </button>
+                </div>
+            </div>
+
+            <button (click)="confirmSelection()" 
+                    [disabled]="!selectedMainId"
+                    class="h-11 px-6 md:px-12 bg-primary hover:bg-primary-hover text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/25 active:scale-95 active:shadow-sm transition-all flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:cursor-not-allowed flex-1 md:flex-none">
+                <span>تایید و ثبت نهایی</span>
+                <icon name="check-circle" className="w-5 h-5"></icon>
+            </button>
+
+        </div>
     </div>
 </div>
