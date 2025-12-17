@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MealService } from '../../../core/services/meal.service';
 import { Icon } from '../../../shared/icon/icon';
 
@@ -16,6 +16,9 @@ interface CalendarDay {
 	isToday: boolean;
 	selectedFood?: string;
 	quantity: number;
+	isMenuSet?: boolean;
+    mainCount?: number;
+    sideCount?: number;
 }
 
 interface WeekGroup {
@@ -32,11 +35,18 @@ interface WeekGroup {
 })
 export class MealSelection implements OnInit {
 	private _router = inject(Router);
+	private _route = inject(ActivatedRoute);
 	private _mealService = inject(MealService);
 
 	weeks: WeekGroup[] = [];
 	currentWeekIndex: number = 0;
+	isAdminMode = false;
+
 	ngOnInit() {
+		this._route.queryParams.subscribe(params => {
+            this.isAdminMode = params['mode'] === 'admin';
+        });
+
 		this.generateWeeks();
 	}
 
@@ -74,6 +84,8 @@ export class MealSelection implements OnInit {
 				const reserved = this._mealService.getReservation(dateIso);
 				const isFriday = startPointer.getDay() === 5;
 
+				const menuStatus = this._mealService.getDailyMenuStatus(dateIso);
+
 				weekDays.push({
 					dateObj: new Date(startPointer),
 					dateIso: dateIso,
@@ -86,6 +98,9 @@ export class MealSelection implements OnInit {
 					isToday: isToday,
 					selectedFood: reserved?.selectedFoodName,
 					quantity: reserved?.quantity || 0,
+					isMenuSet: menuStatus.isMenuSet,
+					mainCount: menuStatus.mainCount,
+            		sideCount: menuStatus.sideCount
 				});
 
 				startPointer.setDate(startPointer.getDate() + 1);
@@ -108,9 +123,19 @@ export class MealSelection implements OnInit {
 
 	onSelectDay(day: CalendarDay) {
 		if (day.isHoliday || day.isPast) return;
-		this._router.navigate(['/rsv/list'], {
-			queryParams: { date: day.dateIso, persianDate: day.fullDate },
-		});
+
+		if (this.isAdminMode) {
+			this._router.navigate(['../admin/daily-menu'], {
+				relativeTo: this._route,
+				queryParams: { date: day.dateIso, persianDate: day.fullDate }
+			});
+			
+		} else {
+			this._router.navigate(['../list'], {
+				relativeTo: this._route,
+				queryParams: { date: day.dateIso, persianDate: day.fullDate }
+			});
+		}
 	}
 
 	nextWeek() {

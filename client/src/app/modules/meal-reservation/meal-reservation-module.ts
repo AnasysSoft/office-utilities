@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MealSelection } from './meal-selection/meal-selection';
 import { MealsList } from './meals-list/meals-list';
 import { GuestReservation } from './guest-reservation/guest-reservation';
+import { DailyMenuManagement } from '../admin/daily-menu-management/daily-menu-management';
 
 const routes: Routes = [
   {path: '', component: MealReservationDashboard, 
@@ -12,6 +13,7 @@ const routes: Routes = [
         {path: 'reserve', component: MealSelection},
         {path: 'guest', component: GuestReservation},
         {path: 'list', component: MealsList},
+        { path: 'admin/daily-menu', component: DailyMenuManagement },
         {path: '**', component: MealSelection},
     ]}, 
    // {path: 'list', component: MealsList} 

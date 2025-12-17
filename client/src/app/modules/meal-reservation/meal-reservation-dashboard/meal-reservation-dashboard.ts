@@ -30,7 +30,10 @@ export class MealReservationDashboard implements OnInit {
 
     navigateToSchedule() {
         this.isAdminDropdownOpen = false;
-        this._router.navigate(['reserve'], { relativeTo: this._activatedRoute }); 
+        this._router.navigate(['reserve'], { 
+            relativeTo: this._activatedRoute,
+            queryParams: { mode: 'admin' }
+        });
     }
 
     toggleAdminDropdown(event?: Event) {

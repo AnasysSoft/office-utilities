@@ -1,0 +1,76 @@
+<div class="flex flex-col h-full bg-background animate-fade-in pb-10">
+    <div class="flex items-center gap-3 p-4 border-b border-border/50 sticky top-0 bg-surface/90 backdrop-blur z-20">
+        <button (click)="goBack()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <icon name="arrow-right" className="w-5 h-5 text-text-muted"></icon>
+        </button>
+        <div>
+            <h2 class="text-lg font-bold text-text-main">مدیریت منوی روزانه</h2>
+            <span class="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md mt-1 inline-block">
+                {{ persianDateLabel }}
+            </span>
+        </div>
+    </div>
+
+    <div class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex flex-col gap-3">
+            <h3 class="text-sm font-bold text-text-muted mb-1 flex items-center gap-2">
+                <icon name="fire" className="w-4 h-4"></icon>
+                غذای اصلی
+            </h3>
+            
+            <div class="flex flex-col gap-2">
+                @for (food of allFoods; track food.id) {
+                    @if (food.type === 'main') {
+                        <div (click)="toggleFood(food)"
+                             class="flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none"
+                             [ngClass]="food.isActive ? 'bg-primary/5 border-primary shadow-sm' : 'bg-surface border-border hover:border-border/80'">
+                            
+                            <span class="text-sm font-medium" [class.text-primary]="food.isActive" [class.text-text-main]="!food.isActive">
+                                {{ food.name }}
+                            </span>
+
+                            <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors"
+                                 [ngClass]="food.isActive ? 'bg-primary border-primary' : 'border-text-muted/40 bg-white'">
+                                <icon *ngIf="food.isActive" name="check" className="w-3.5 h-3.5 text-white"></icon>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <h3 class="text-sm font-bold text-text-muted mb-1 flex items-center gap-2">
+                <icon name="beaker" className="w-4 h-4"></icon>
+                مخلفات
+            </h3>
+            
+            <div class="flex flex-col gap-2">
+                @for (food of allFoods; track food.id) {
+                    @if (food.type === 'side') {
+                        <div (click)="toggleFood(food)"
+                             class="flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none"
+                             [ngClass]="food.isActive ? 'bg-secondary/5 border-secondary shadow-sm' : 'bg-surface border-border hover:border-border/80'">
+                            
+                            <span class="text-sm font-medium" [class.text-secondary-dark]="food.isActive" [class.text-text-main]="!food.isActive">
+                                {{ food.name }}
+                            </span>
+
+                            <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors"
+                                 [ngClass]="food.isActive ? 'bg-secondary border-secondary' : 'border-text-muted/40 bg-white'">
+                                <icon *ngIf="food.isActive" name="check" className="w-3.5 h-3.5 text-white"></icon>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30">
+        <button (click)="saveDailyMenu()" class="cursor-pointer flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-2xl shadow-lg shadow-green-600/30 transition-all active:scale-95 font-bold">
+            <icon name="check-circle" className="w-5 h-5"></icon>
+            <span>ذخیره منو</span>
+        </button>
+    </div>
+</div>
