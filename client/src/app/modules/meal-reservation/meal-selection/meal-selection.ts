@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MealService } from '../../../core/services/meal.service';
 import { Icon } from '../../../shared/icon/icon';
@@ -8,9 +8,19 @@ interface CalendarDay {
 	dateObj: Date;
 	dateIso: string;
 	dayName: string;
+	dayNumber: string;
+	monthName: string;
 	fullDate: string;
 	isHoliday: boolean;
+	isPast: boolean;
+	isToday: boolean;
 	selectedFood?: string;
+}
+
+interface WeekGroup {
+	id: number;
+	label: string;
+	days: CalendarDay[];
 }
 
 @Component({
@@ -19,50 +29,97 @@ interface CalendarDay {
   templateUrl: './meal-selection.html',
   styleUrl: './meal-selection.scss',
 })
-export class MealSelection {
+export class MealSelection implements OnInit {
 	private _router = inject(Router);
 	private _mealService = inject(MealService);
 
-	days: CalendarDay[] = [];
-
+	weeks: WeekGroup[] = [];
+	currentWeekIndex: number = 0;
 	ngOnInit() {
-		this.generateDays();
+		this.generateWeeks();
 	}
 
-	generateDays() {
+	generateWeeks() {
 		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
 		const formatterDay = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' });
-		const formatterDate = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		const formatterNumber = new Intl.DateTimeFormat('fa-IR', { day: 'numeric' });
+		const formatterMonth = new Intl.DateTimeFormat('fa-IR', { month: 'long' });
+		const formatterDateLabel = new Intl.DateTimeFormat('fa-IR', { month: 'long', day: 'numeric' });
+		const formatterFullDate = new Intl.DateTimeFormat('fa-IR', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+		});
 
-		for (let i = 0; i < 20; i++) {
-			const date = new Date(today);
-			date.setDate(today.getDate() + i);
+		const dayOfWeek = today.getDay();
+		const offsetToSaturday = (dayOfWeek + 1) % 7;
 
-			const dateIso = date.toISOString().split('T')[0];
-			
-			const reserved = this._mealService.getReservation(dateIso);
+		const startPointer = new Date(today);
+		startPointer.setDate(today.getDate() - offsetToSaturday);
 
-			const isFriday = date.getDay() === 5; 
+		for (let w = 0; w < 4; w++) {
+			const weekDays: CalendarDay[] = [];
+			const weekStart = new Date(startPointer);
 
-			this.days.push({
-				dateObj: date,
-				dateIso: dateIso,
-				dayName: formatterDay.format(date),
-				fullDate: formatterDate.format(date),
-				isHoliday: isFriday,
-				selectedFood: reserved?.selectedFoodName
+			for (let d = 0; d < 7; d++) {
+				const currentLoopDate = new Date(startPointer);
+				currentLoopDate.setHours(0, 0, 0, 0);
+				const isPast = currentLoopDate < today;
+				const isToday = currentLoopDate.getTime() === today.getTime();
+
+				const dateIso = startPointer.toISOString().split('T')[0];
+				const reserved = this._mealService.getReservation(dateIso);
+				const isFriday = startPointer.getDay() === 5;
+
+				weekDays.push({
+					dateObj: new Date(startPointer),
+					dateIso: dateIso,
+					dayName: formatterDay.format(startPointer),
+					dayNumber: formatterNumber.format(startPointer),
+					monthName: formatterMonth.format(startPointer),
+					fullDate: formatterFullDate.format(startPointer),
+					isHoliday: isFriday,
+					isPast: isPast,
+					isToday: isToday,
+					selectedFood: reserved?.selectedFoodName,
+				});
+
+				startPointer.setDate(startPointer.getDate() + 1);
+			}
+
+			const weekEnd = new Date(startPointer);
+			weekEnd.setDate(weekEnd.getDate() - 1);
+
+			const label = `${formatterDateLabel.format(weekStart)}  -  ${formatterDateLabel.format(
+				weekEnd
+			)}`;
+
+			this.weeks.push({
+				id: w,
+				label: label,
+				days: weekDays,
 			});
 		}
 	}
 
 	onSelectDay(day: CalendarDay) {
-		if (day.isHoliday) return;
-
-		this._router.navigate(['/rsv/list'], { 
-			queryParams: { 
-				date: day.dateIso, 
-				persianDate: day.fullDate 
-			} 
+		if (day.isHoliday || day.isPast) return;
+		this._router.navigate(['/rsv/list'], {
+			queryParams: { date: day.dateIso, persianDate: day.fullDate },
 		});
+	}
+
+	nextWeek() {
+		if (this.currentWeekIndex < this.weeks.length - 1) {
+			this.currentWeekIndex++;
+		}
+	}
+
+	prevWeek() {
+		if (this.currentWeekIndex > 0) {
+			this.currentWeekIndex--;
+		}
 	}
 }
