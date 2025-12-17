@@ -1,0 +1,46 @@
+<div class="fixed top-4 right-4 z-[100] flex flex-col gap-3 w-full max-w-md pointer-events-none p-4 sm:p-0">
+    
+    @for (toast of toastService.toasts(); track toast.id) {
+        <div class="pointer-events-auto relative overflow-hidden bg-white rounded-xl shadow-lg border-r-[5px] p-4 flex items-start gap-4 transition-all duration-300 animate-toast-slide-in-right group"
+             [ngClass]="{
+                'border-secondary': toast.type === 'success',
+                'border-red-500': toast.type === 'error',
+                'border-blue-500': toast.type === 'info',
+                'border-yellow-500': toast.type === 'warning'
+             }">
+            
+            <div class="shrink-0 mt-0.5"
+                 [ngClass]="{
+                    'text-secondary': toast.type === 'success',
+                    'text-red-500': toast.type === 'error',
+                    'text-blue-500': toast.type === 'info',
+                    'text-yellow-500': toast.type === 'warning'
+                 }">
+                <icon [name]="getIconName(toast.type)" className="w-6 h-6"></icon>
+            </div>
+
+            <div class="flex-1 pt-0.5">
+                <h4 class="text-sm font-bold text-text-main leading-tight">
+                    {{ toast.title }}
+                </h4>
+                <p class="text-xs text-text-muted mt-1 leading-relaxed">
+                    {{ toast.text }}
+                </p>
+            </div>
+
+            <button (click)="toastService.remove(toast.id)" 
+                    class="absolute top-2 left-2 text-text-muted/40 hover:text-text-main hover:bg-gray-100 rounded-full p-1 transition-colors opacity-0 group-hover:opacity-100 md:opacity-100">
+                <icon name="x-mark" className="w-4 h-4"></icon>
+            </button>
+
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+                 [ngClass]="{
+                    'bg-secondary': toast.type === 'success',
+                    'bg-red-500': toast.type === 'error',
+                    'bg-blue-500': toast.type === 'info',
+                    'bg-yellow-500': toast.type === 'warning'
+                 }"></div>
+        </div>
+    }
+
+</div>
