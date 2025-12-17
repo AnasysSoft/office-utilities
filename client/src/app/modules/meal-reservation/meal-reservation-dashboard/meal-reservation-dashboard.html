@@ -30,6 +30,38 @@
                     <icon name="users" className="w-4 h-4"></icon>
                     <span>رزرو میهمان</span>
                 </button>
+
+                <div class="relative border-r border-border/60 pr-4 mr-1">
+                    <button (click)="toggleAdminDropdown()" #adminButton
+                            class="flex items-center gap-2 py-2 px-3 rounded-md bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition-all active:scale-95 cursor-pointer"
+                            [class.bg-red-100]="isAdminDropdownOpen">
+                        <icon name="cog-6-tooth" className="w-5 h-5"></icon>
+                        <span class="text-xs font-bold hidden lg:block">پنل ادمین</span>
+                        <icon name="chevron-down" className="w-3 h-3 transition-transform duration-200" [class.rotate-180]="isAdminDropdownOpen"></icon>
+                    </button>
+
+                    @if (isAdminDropdownOpen) {
+                        <div class="absolute top-[120%] left-0 w-48 bg-surface rounded-xl shadow-floating border border-border/60 p-1.5 z-50 animate-scale-in origin-top-left flex flex-col gap-1">
+                            <div class="px-2 py-1.5 border-b border-border/40 mb-1">
+                                <span class="text-[10px] text-text-muted font-bold">مدیریت سامانه</span>
+                            </div>
+
+                            <button (click)="navigateToSchedule()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-primary/5 hover:text-primary text-text-main text-xs font-bold transition-colors text-right">
+                                <div class="p-1 rounded-md bg-background border border-border/50">
+                                    <icon name="calendar-days" className="w-4 h-4"></icon>
+                                </div>
+                                <span>برنامه غذایی</span>
+                            </button>
+
+                            <button class="w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-red-50 hover:text-red-500 text-text-muted text-xs font-medium transition-colors text-right cursor-not-allowed opacity-60">
+                                <div class="p-1 rounded-md bg-background border border-border/50">
+                                    <icon name="chart-bar" className="w-4 h-4"></icon>
+                                </div>
+                                <span>گزارش‌گیری (به زودی)</span>
+                            </button>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </header>
@@ -38,21 +70,59 @@
         <router-outlet></router-outlet>
     </main>
 
-    <div class="shrink-0 fixed bottom-0 left-0 right-0 bg-surface border-t border-border shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] p-4 z-40 md:hidden">
-        <div class="w-full max-w-[420px] mx-auto grid grid-cols-2 gap-3">
-            <button 
-                (click)="navigateTo('reserve')"
-                class="w-full flex justify-center items-center gap-2 py-2.5 px-4 rounded-md border border-primary/20 bg-primary/5 text-sm font-bold text-primary active:bg-primary/10 transition-colors ease-spring active:scale-[0.98] cursor-pointer">
-                <icon name="clipboard-document-list" className="w-5 h-5"></icon>
-                <span>مشاهده رزروها</span>
+<div class="shrink-0 fixed bottom-0 left-0 right-0 bg-surface border-t border-border shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] px-4 py-2 z-40 md:hidden h-[72px] flex items-center">
+        
+        <div class="w-full max-w-[420px] mx-auto grid grid-cols-3 gap-3">
+            
+            <button (click)="navigateTo('reserve')" class="cursor-pointer flex flex-col justify-center items-center gap-1 h-full rounded-xl transition-all active:scale-95 group"
+                    [class.text-primary]="true"> <div class="p-1.5 rounded-lg bg-primary/5 border border-primary/20 group-active:bg-primary/20 transition-colors">
+                    <icon name="clipboard-document-list" className="w-5 h-5"></icon>
+                </div>
+                <span class="text-[10px] font-bold">رزروها</span>
             </button>
 
-            <button 
-                (click)="navigateTo('guest')"
-                class="w-full flex justify-center items-center gap-2 py-2.5 px-4 rounded-md bg-dark text-white text-sm font-bold shadow-md shadow-dark/20 active:bg-dark-hover transition-colors ease-spring active:scale-[0.98] cursor-pointer">
-                <icon name="users" className="w-5 h-5"></icon>
-                <span>رزرو میهمان</span>
+            <button (click)="navigateTo('guest')" class="cursor-pointer flex flex-col justify-center items-center gap-1 h-full rounded-xl transition-all active:scale-95 group text-text-muted hover:text-text-main">
+                <div class="p-1.5 rounded-lg bg-surface border border-border group-active:bg-gray-100 transition-colors">
+                    <icon name="users" className="w-5 h-5"></icon>
+                </div>
+                <span class="text-[10px] font-medium">میهمان</span>
             </button>
+
+            <div class="relative flex flex-col justify-center items-center h-full">
+                <button (click)="toggleAdminDropdown($event)" #adminButton
+                        class="cursor-pointer flex flex-col justify-center items-center gap-1 w-full h-full rounded-xl transition-all active:scale-95 group text-red-500">
+                    <div class="p-1.5 rounded-lg bg-red-50 border border-red-100 group-active:bg-red-100 transition-colors"
+                         [class.bg-red-100]="isAdminDropdownOpen">
+                        <icon name="cog-6-tooth" className="w-5 h-5"></icon>
+                    </div>
+                    <span class="text-[10px] font-bold">ادمین</span>
+                </button>
+
+                @if (isAdminDropdownOpen) {
+                    <div class="absolute bottom-[110%] left-1/2 -translate-x-1/2 w-48 bg-surface rounded-xl shadow-floating-up border border-border/60 p-1.5 z-50 animate-scale-in origin-bottom flex flex-col gap-1">
+                        <div class="px-2 py-1.5 border-b border-border/40 mb-1">
+                            <span class="text-[10px] text-text-muted font-bold">مدیریت سامانه</span>
+                        </div>
+
+                        <button (click)="navigateToSchedule()" 
+                                class="cursor-pointer w-full flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-primary/5 hover:text-primary text-text-main text-xs font-bold transition-colors text-right">
+                            <div class="p-1 rounded-md bg-background border border-border/50">
+                                <icon name="calendar-days" className="w-4 h-4"></icon>
+                            </div>
+                            <span>برنامه غذایی</span>
+                        </button>
+
+                        <button class="cursor-pointer w-full flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-text-muted text-xs font-medium transition-colors text-right cursor-not-allowed opacity-60">
+                            <div class="p-1 rounded-md bg-background border border-border/50">
+                                <icon name="chart-bar" className="w-4 h-4"></icon>
+                            </div>
+                            <span>گزارش‌گیری</span>
+                        </button>
+
+                        <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-surface border-b border-r border-border/60 rotate-45"></div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
