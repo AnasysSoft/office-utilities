@@ -1,10 +1,119 @@
+<div class="flex flex-col h-full bg-background relative overflow-hidden animate-fade-in">
+    <div class="flex items-center justify-between p-4 shrink-0 bg-surface/80 backdrop-blur-md sticky top-0 z-20 border-b border-border/50">
+        <div class="flex items-center gap-3">
+            <button (click)="goBack()" 
+                    class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 transition-all active:scale-95 shadow-sm cursor-pointer">
+                <icon name="arrow-right" className="w-5 h-5"></icon>
+            </button>
+            
+            <div class="flex flex-col">
+                <h2 class="text-lg font-bold text-text-main leading-none">منوی رزرو</h2>
+                <div class="flex items-center gap-1.5 mt-1 text-xs text-text-muted">
+                    <span class="opacity-70">تاریخ:</span>
+                    <span class="font-bold text-primary dir-ltr">{{ persianDateLabel }}</span>
+                </div>
+            </div>
+        </div>
+        
+        </div>
 
-    <div class="flex font-bold text-center text-indigo-800 py-2 px-2 justify-between bg-black/15">
-        <div class="text-sm" (click)="goBack()">برگشت</div>
-       <span> {{selectedDay?.date | jdate:"YYYY/MM/DD"}}</span>
-       <span> {{selectedDay?.day }}</span>
-    </div>
+    <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-24">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
+            
+            <section class="flex flex-col gap-3 animate-slide-up" style="--delay: 0s">
+                <div class="flex items-center gap-3 mb-1 pb-2 border-b border-border/60">
+                    <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shadow-sm">
+                        <icon name="fire" className="w-5 h-5"></icon>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-text-main text-lg">غذای اصلی</h3>
+                        <p class="text-[11px] text-text-muted">لطفاً یک گزینه انتخاب کنید</p>
+                    </div>
+                </div>
 
-    <div id="daysList" class="" *ngFor="let item of items">
-        <span>{{item?.name}}</span>
+                <div class="flex flex-col gap-3">
+                    @for (meal of mainCourses; track meal.id) {
+                        <div (click)="selectMain(meal)"
+                             class="group relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer overflow-hidden"
+                             [ngClass]="{
+                                'border-primary bg-primary/5 shadow-sm': selectedMainId === meal.id,
+                                'border-transparent bg-surface hover:border-border shadow-sm hover:shadow-md': selectedMainId !== meal.id
+                             }">
+                            
+                            <div class="flex items-center gap-3 z-10 flex-1">
+                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0"
+                                     [ngClass]="{
+                                        'border-primary': selectedMainId === meal.id,
+                                        'border-text-muted/40 group-hover:border-primary/50': selectedMainId !== meal.id
+                                     }">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-primary transition-transform duration-200"
+                                         [ngClass]="selectedMainId === meal.id ? 'scale-100' : 'scale-0'"></div>
+                                </div>
+
+                                <span class="font-bold text-sm transition-colors line-clamp-1"
+                                      [ngClass]="selectedMainId === meal.id ? 'text-primary' : 'text-text-main'">
+                                    {{ meal.name }}
+                                </span>
+                            </div>
+
+                            @if (selectedMainId === meal.id) {
+                                <div class="w-8 h-8 flex items-center justify-center text-primary bg-white/60 rounded-full shadow-sm animate-fade-in shrink-0">
+                                    <icon name="check" className="w-5 h-5"></icon>
+                                </div>
+                             }
+                        </div>
+                    }
+                </div>
+            </section>
+
+            <section class="flex flex-col gap-3 animate-slide-up" style="--delay: 0.1s">
+                <div class="flex items-center gap-3 mb-1 pb-2 border-b border-border/60">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm">
+                        <icon name="beaker" className="w-5 h-5"></icon>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-text-main text-lg">مخلفات و نوشیدنی</h3>
+                        <p class="text-[11px] text-text-muted">انتخاب نوشیدنی یا دسر (اختیاری)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    @for (side of sideDishes; track side.id) {
+                        <div (click)="selectSide(side)"
+                             class="group relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer overflow-hidden"
+                             [ngClass]="{
+                                'border-secondary bg-secondary/5 shadow-sm': selectedSideId === side.id,
+                                'border-transparent bg-surface hover:border-border shadow-sm hover:shadow-md': selectedSideId !== side.id
+                             }">
+                            
+                            <div class="flex items-center gap-3 z-10 flex-1">
+                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0"
+                                     [ngClass]="{
+                                        'border-secondary': selectedSideId === side.id,
+                                        'border-text-muted/40 group-hover:border-secondary/50': selectedSideId !== side.id
+                                     }">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-secondary transition-transform duration-200"
+                                         [ngClass]="selectedSideId === side.id ? 'scale-100' : 'scale-0'"></div>
+                                </div>
+
+                                <span class="font-bold text-sm transition-colors line-clamp-1"
+                                      [ngClass]="selectedSideId === side.id ? 'text-secondary-dark' : 'text-text-main'">
+                                    {{ side.name }}
+                                </span>
+                            </div>
+
+                             @if (selectedSideId === side.id) {
+                                <div class="w-8 h-8 flex items-center justify-center text-secondary-dark bg-white/60 rounded-full shadow-sm animate-fade-in shrink-0">
+                                    <icon name="check" className="w-5 h-5"></icon>
+                                </div>
+                             }
+                        </div>
+                    }
+                </div>
+            </section>
+
+        </div>
+
     </div>
+</div>

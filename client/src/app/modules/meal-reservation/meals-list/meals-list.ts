@@ -1,77 +1,89 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { slideInAnimation } from '../../../core/animation/slide-animation';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../core/user/user-service';
-import { JalaliDatePipe } from '../../../core/pipes/jalali-date';
-import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { MealService } from '../../../core/services/meal.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { Icon } from '../../../shared/icon/icon';
+
+interface SimpleMeal {
+	id: number;
+	name: string;
+	type: 'main' | 'side';
+}
 
 @Component({
   selector: 'app-meals-list',
-  imports: [CommonModule, JalaliDatePipe],
+  imports: [CommonModule, Icon],
   templateUrl: './meals-list.html',
-  styleUrl: './meals-list.scss',
-  animations: [slideInAnimation]
+  styleUrl: './meals-list.scss'
 })
 export class MealsList implements OnInit {
-  selectedDay: any = null;
-  selectedMealType?: number;
-  mealTypes: (any)[] = [];
-  items: (any)[] = [];
+	private _route = inject(ActivatedRoute);
+	private _location = inject(Location);
+	private _mealService = inject(MealService);
+	public _toastService = inject(ToastService);
 
-  _activatedRoute = inject(ActivatedRoute);
-  _router = inject(Router);
-  _userService = inject(UserService);
+	targetDate: string = '';
+	persianDateLabel: string = '';
 
+	mainCourses: SimpleMeal[] = [
+		{ id: 1, name: 'چلو کباب کوبیده زعفرانی', type: 'main' },
+		{ id: 2, name: 'زرشک پلو با مرغ مجلسی', type: 'main' },
+		{ id: 3, name: 'خورشت قورمه سبزی', type: 'main' },
+		{ id: 4, name: 'خوراک شنیسل مرغ', type: 'main' },
+		{ id: 5, name: 'خوراک سبزیجات رژیمی', type: 'main' },
+	];
 
-  ngOnInit(): void {
-    if (history.state?.day) {
-      this.selectedDay = history.state.day;
-      console.log('کل اطلاعات روز:', this.selectedDay);
-      // مثلاً: { date: ..., meal: 'زرشک‌پلو', isToday: true, ... }
-    }
+	sideDishes: SimpleMeal[] = [
+		{ id: 101, name: 'نوشابه قوطی', type: 'side' },
+		{ id: 102, name: 'دوغ محلی', type: 'side' },
+		{ id: 103, name: 'ماست موسیر', type: 'side' },
+		{ id: 104, name: 'ژله میوه‌ای', type: 'side' },
+		{ id: 105, name: 'بدون نوشیدنی/دسر', type: 'side' },
+	];
 
+	selectedMainId: number | null = null;
+	selectedSideId: number | null = null;
 
-  }
+	ngOnInit() {
+		this._route.queryParams.subscribe(params => {
+			this.targetDate = params['date'];
+			this.persianDateLabel = params['persianDate'];
+			const existing = this._mealService.getReservation(this.targetDate);
+			if (existing && existing.selectedFoodId) {
+			}
+		});
+	}
 
+	goBack() {
+		this._location.back();
+	}
 
-  goBack() {
-    this._router.navigate(['../'], { relativeTo: this._activatedRoute });
-  }
+	selectMain(meal: SimpleMeal) {
+		this.selectedMainId = meal.id;
+		this.saveReservation();
+	}
 
-  loadMealTypes() {
-    this.mealTypes = [];
-    this.mealTypes.push({ id: 1, name: 'ناهار' })
-    this.mealTypes.push({ id: 2, name: 'دسر' })
-    this.selectedMealType = 1;
-  }
+	selectSide(meal: SimpleMeal) {
+		this.selectedSideId = meal.id;
+		this.saveReservation();
+	}
 
-  loadMeals(mealType: any) {
-    this.selectedMealType = mealType?.id;
-    if (this.selectedMealType == 1) {
-      this.items.push({ id: 1, name: 'ماست' });
-      this.items.push({ id: 2, name: 'سالاد فصل' });
-      this.items.push({ id: 3, name: 'سالاد کلم' });
-      this.items.push({ id: 4, name: 'ماست موسیر' });
-      this.items.push({ id: 5, name: 'سبزی' });
-    }
-    else if( this.selectedMealType == 2) {
-      
-      this.items.push({ id: 10, name: 'زرشک  پلو' });
-      this.items.push({ id: 20, name: 'خوراک کباب' });
-      this.items.push({ id: 30, name: 'کباب' });
-      this.items.push({ id: 40, name: 'ماهی' });
-      this.items.push({ id: 50, name: 'اکبر جوجه' });
-    }
-  }
+	private saveReservation() {
+		const mainName = this.mainCourses.find(m => m.id === this.selectedMainId)?.name || '';
+		const sideName = this.sideDishes.find(s => s.id === this.selectedSideId)?.name || '';
 
-  selectMeal() {
+		let displayName = mainName;
+		if (sideName && sideName !== 'بدون نوشیدنی/دسر') {
+			displayName += ` + ${sideName}`;
+		}
 
-  }
-
-  selectMeal2() {
-
-  }
-
+		this._mealService.setReservation(this.targetDate, displayName, this.selectedMainId || 0);
+		
+		this._toastService.show(
+			'عملیات موفق',
+			'انتخاب‌های شما با موفقیت در سیستم ثبت شد.',
+			'success'
+		);
+	}
 }
-
-

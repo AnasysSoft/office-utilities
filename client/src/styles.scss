@@ -80,13 +80,28 @@ input:focus, textarea:focus, button:focus {
     display: inline-block;
 }
 
-.bg-gray-50 {
-    background-color: #f9fafb;
-    background-image: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 5px,
-        rgba(0, 0, 0, 0.03) 5px,
-        rgba(0, 0, 0, 0.03) 10px
-    );
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--delay, 0s);
+    opacity: 0;
+}
+
+@keyframes toastSlideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+.animate-toast-slide-in-right {
+    animation: toastSlideInRight 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
 }
