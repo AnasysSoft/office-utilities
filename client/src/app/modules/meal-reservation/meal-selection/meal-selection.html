@@ -48,10 +48,10 @@
         </button>
     </div>
 
-    <div class="flex-1 flex flex-col gap-2 min-h-0 overflow-hidden">
+    <div class="flex-1 flex flex-col gap-2 min-h-0 overflow-y-auto md:overflow-hidden pb-2 md:pb-0">
         
         @for (week of weeks; track week.id; let wIndex = $index) {
-            <div class="flex-col gap-2 transition-all duration-500 ease-in-out h-full"
+            <div class="flex-col gap-2 transition-all duration-500 ease-in-out md:h-full"
                  [ngClass]="{
                     'hidden md:flex md:flex-1': currentWeekIndex !== wIndex, 
                     'flex h-full': currentWeekIndex === wIndex 
@@ -64,12 +64,14 @@
                     <div class="h-px flex-1 bg-gradient-to-l from-transparent via-border to-transparent"></div>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-2 h-full overflow-y-auto">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:h-full">
                     
                     @for (day of week.days; track day.dateIso; let dIndex = $index) {
                         <div (click)="onSelectDay(day)"
-                             class="relative flex flex-col rounded-2xl border transition-all duration-200 group overflow-hidden h-full min-h-[120px]"
+                             class="relative flex flex-col rounded-2xl border transition-all duration-200 group overflow-hidden"
                              [ngClass]="{
+                                'h-36 md:h-full': true,  
+
                                 'bg-surface hover:border-primary/60 hover:shadow-lg hover:-translate-y-1 cursor-pointer border-border': !day.isHoliday && !day.isPast && !day.selectedFood && !day.isToday,
 
                                 'bg-surface border-primary ring-1 ring-primary shadow-md cursor-pointer': day.selectedFood && !day.isPast && !day.isToday,
@@ -114,18 +116,13 @@
                             <div class="h-[44px] xl:h-[50px] shrink-0 w-full mt-auto flex items-center justify-center border-t transition-colors duration-300 px-2 text-center relative overflow-hidden"
                                  [ngClass]="{
                                     'border-border/30 bg-primary/5 group-hover:bg-primary group-hover:border-primary': !day.selectedFood && !day.isHoliday && !day.isPast,
-                                    
                                     'bg-primary/10 border-primary/20': day.selectedFood && !day.isPast,
-                                    
                                     'border-accent/10 bg-accent/5': day.isHoliday && !day.isPast,
-
                                     'border-transparent bg-transparent': day.isPast
                                  }">
 
                                 @if (day.isPast) {
-                                    <div class="text-[10px] text-text-muted/40 font-bold">
-                                        پایان یافته
-                                    </div>
+                                    <div class="text-[10px] text-text-muted/40 font-bold">پایان یافته</div>
                                 }
 
                                 @if (!day.isPast && !day.selectedFood && !day.isHoliday) {
@@ -138,22 +135,24 @@
                                 }
 
                                 @if (!day.isPast && day.selectedFood) {
-                                    @if (day.quantity && day.quantity > 1) {
-                                        <div class="absolute top-1 left-1 bg-white/90 text-primary border border-primary/20 text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow-sm z-20 flex items-center gap-0.5 animate-bounce-small">
-                                            <span>{{ day.quantity }}</span>
-                                            <span class="text-[8px] opacity-80 font-normal">x</span>
-                                        </div>
-                                    }
+                                    <div class="flex flex-col items-center justify-center w-full h-full gap-0.5 relative">
+                                        
+                                        @if (day.quantity && day.quantity > 1) {
+                                            <div class="absolute top-1 left-1 bg-white/90 text-primary border border-primary/20 text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow-sm z-20 flex items-center gap-0.5 animate-bounce-small">
+                                                <span>{{ day.quantity }}</span>
+                                                <span class="text-[8px] opacity-80 font-normal">x</span>
+                                            </div>
+                                        }
 
-                                    <span class="text-[10px] sm:text-xs font-bold text-primary leading-tight line-clamp-1 w-full px-1">
-                                        {{ day.selectedFood }}
-                                    </span>
+                                        <span class="text-[9px] text-text-muted/70 font-medium hidden xl:block">غذای انتخابی:</span>
+                                        <span class="text-[10px] sm:text-xs font-bold text-primary leading-tight line-clamp-1 w-full px-1">
+                                            {{ day.selectedFood }}
+                                        </span>
+                                    </div>
                                 }
 
                                 @if (!day.isPast && day.isHoliday) {
-                                    <div class="text-[10px] text-accent font-bold">
-                                        تعطیل رسمی
-                                    </div>
+                                    <div class="text-[10px] text-accent font-bold">تعطیل رسمی</div>
                                 }
                             </div>
 

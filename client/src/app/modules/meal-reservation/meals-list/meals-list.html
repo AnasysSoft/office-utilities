@@ -2,8 +2,7 @@
 
     <div class="flex items-center justify-between p-4 shrink-0 bg-surface/80 backdrop-blur-md sticky top-0 z-20 border-b border-border/50">
         <div class="flex items-center gap-3">
-            <button (click)="goBack()" 
-                    class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 transition-all active:scale-95 shadow-sm cursor-pointer">
+            <button (click)="goBack()" class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 transition-all active:scale-95 shadow-sm cursor-pointer">
                 <icon name="arrow-right" className="w-5 h-5"></icon>
             </button>
             <div class="flex flex-col">
@@ -110,7 +109,7 @@
                 <div class="flex items-center bg-background rounded-xl border border-border h-11 w-32 shadow-sm">
                     <button (click)="updateQuantity(-1)" 
                             [disabled]="quantity <= 1"
-                            class="w-10 h-full flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-gray-100 active:bg-gray-200 transition-colors rounded-r-xl disabled:opacity-30 disabled:cursor-not-allowed">
+                            class="cursor-pointer w-10 h-full flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-gray-100 active:bg-gray-200 transition-colors rounded-r-xl disabled:opacity-30 disabled:cursor-not-allowed">
                         <icon name="minus" className="w-4 h-4"></icon>
                     </button>
 
@@ -122,16 +121,14 @@
                     </div>
 
                     <button (click)="updateQuantity(1)" 
-                            class="w-10 h-full flex items-center justify-center text-primary hover:bg-primary/5 active:bg-primary/10 transition-colors rounded-l-xl">
+                            class="cursor-pointer w-10 h-full flex items-center justify-center text-primary hover:bg-primary/5 active:bg-primary/10 transition-colors rounded-l-xl">
                         <icon name="plus" className="w-4 h-4"></icon>
                     </button>
                 </div>
             </div>
 
-            <button (click)="confirmSelection()" 
-                    [disabled]="!selectedMainId"
-                    class="h-11 px-6 md:px-12 bg-primary hover:bg-primary-hover text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/25 active:scale-95 active:shadow-sm transition-all flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:cursor-not-allowed flex-1 md:flex-none">
-                <span>تایید و ثبت نهایی</span>
+            <button (click)="confirmSelection()" class="cursor-pointer h-11 px-6 md:px-12 bg-primary hover:bg-primary-hover text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/25 active:scale-95 active:shadow-sm transition-all flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:cursor-not-allowed flex-1 md:flex-none">
+                <span>تایید تعداد</span>
                 <icon name="check-circle" className="w-5 h-5"></icon>
             </button>
 
