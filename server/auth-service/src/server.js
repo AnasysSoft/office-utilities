@@ -1,21 +1,41 @@
 const fastify = require('fastify')({ logger: true });
+const env = require('@fastify/env');
 const helmet = require('@fastify/helmet');
 const rateLimit = require('@fastify/rate-limit');
 const jwt = require('@fastify/jwt');
 const cookie = require('@fastify/cookie');
-const authRoutes = require('./routes/authRoutes.js');
+const authRoutes = require('./routes/authRoutes');
 
-// امنیت پایه
+// تنظیمات محیطی
+const schema = {
+  type: 'object',
+  required: ['JWT_SECRET'],
+  properties: {
+    JWT_SECRET: { type: 'string' },
+    JWT_EXPIRES_IN: { type: 'string', default: '1h' },
+    PORT: { type: 'integer', default: 3001 }
+  }
+};
+
+fastify.register(env, {
+  schema,
+  dotenv: true,
+  data: process.env
+});
+
+// امنیت
 fastify.register(helmet);
 fastify.register(rateLimit, {
   max: 100,
-  timeWindow: '1 minute',
-  ban: 5
+  timeWindow: '1 minute'
 });
 
-// JWT (در تولید secret را از .env بخوانید)
+// JWT
 fastify.register(jwt, {
-  secret: 'supersecretlongrandomstringhereatleast32chars',
+  secret: fastify.config.JWT_SECRET,
+  cookie: {
+    cookieName: 'auth_token'
+  }
 });
 
 // کوکی
@@ -26,8 +46,8 @@ fastify.register(authRoutes);
 
 const start = async () => {
   try {
-    await fastify.listen({ port: 3001, host: '0.0.0.0' });
-    console.log('Auth Service running on http://localhost:3001');
+    await fastify.listen({ port: fastify.config.PORT, host: '0.0.0.0' });
+    fastify.log.info(`Auth Service running on http://localhost:${fastify.config.PORT}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
