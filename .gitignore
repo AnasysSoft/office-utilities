@@ -31,3 +31,10 @@ client/.vscode
 client/node_modules
 client/package-lock.json
 client/dist
+
+server/node_modules
+server/package-lock.json
+server/auth-service/node_modules
+server/auth-service/package-lock.json
+server/user-service/node_modules
+server/user-service/package-lock.json
