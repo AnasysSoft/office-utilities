@@ -10,6 +10,7 @@ import { DailyReservationsList } from '../admin/daily-reservations-list/daily-re
 import { UserProfile } from '../features/user-profile/user-profile';
 import { FoodManagement } from '../admin/food-management/food-management';
 import { NotFoundComponent } from '../features/not-found/not-found';
+import { ChangePasswordComponent } from '../features/change-password/change-password';
 
 const routes: Routes = [
   {path: '', component: MealReservationDashboard, 
@@ -21,6 +22,7 @@ const routes: Routes = [
         { path: 'admin/daily-reservations', component: DailyReservationsList },
         { path: 'admin/foods', component: FoodManagement },
         {path: 'profile', component: UserProfile},
+        {path: 'change-password', component: ChangePasswordComponent},
         { path: '**', component: NotFoundComponent }
     ]}, 
    // {path: 'list', component: MealsList} 

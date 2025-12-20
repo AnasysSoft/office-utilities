@@ -84,6 +84,11 @@ export class MealReservationDashboard implements OnInit {
         this._router.navigate(['profile'], { relativeTo: this._activatedRoute });
     }
 
+    navigateToChangePassword() {
+        this.isUserDropdownOpen = false;
+        this._router.navigate(['change-password'], { relativeTo: this._activatedRoute });
+    }
+
     logout() {
         this.isUserDropdownOpen = false;
         console.log('User logged out');

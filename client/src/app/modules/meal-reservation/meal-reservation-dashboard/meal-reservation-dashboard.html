@@ -23,6 +23,11 @@
                     <span>ویرایش پروفایل</span>
                 </button>
 
+                <button (click)="navigateToChangePassword()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-primary/5 hover:text-primary text-text-main text-xs font-medium transition-colors text-right">
+                    <icon name="key" className="w-4 h-4 text-text-muted"></icon>
+                    <span>تغییر رمز عبور</span>
+                </button>
+
                 <button (click)="logout()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 text-red-500 text-xs font-medium transition-colors text-right mt-1 border-t border-border/30 pt-2">
                     <icon name="arrow-right-on-rectangle" className="w-4 h-4"></icon>
                     <span>خروج از حساب</span>
