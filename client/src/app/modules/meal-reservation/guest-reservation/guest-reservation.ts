@@ -31,6 +31,7 @@ export class GuestReservation extends baseForm {
 	showCalendar = false;
 
     minDateToday: string = '';
+    minDateCheckOut: string = '';
 
 	private getLocalIsoDate(date: Date): string {
         const year = date.getFullYear();
@@ -44,6 +45,20 @@ export class GuestReservation extends baseForm {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         this.minDateToday = this.getLocalIsoDate(today);
+
+        this.minDateCheckOut = this.minDateToday;
+
+        this.entityForm.get('checkIn')?.valueChanges.subscribe((date: string) => {
+            if (date) {
+                this.minDateCheckOut = date;
+
+                const checkOutVal = this.entityForm.get('checkOut')?.value;
+                
+                if (!checkOutVal || new Date(checkOutVal) < new Date(date)) {
+                    this.entityForm.get('checkOut')?.setValue(date);
+                }
+            }
+        });
     }
 
 	override initialForm(): void {
