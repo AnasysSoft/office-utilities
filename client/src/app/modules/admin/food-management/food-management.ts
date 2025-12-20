@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MealService } from '../../../core/services/meal.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -19,89 +19,94 @@ interface FoodItem {
   styleUrl: './food-management.scss'
 })
 export class FoodManagement implements OnInit {
-	private _fb = inject(FormBuilder);
-	private _location = inject(Location);
-	private _mealService = inject(MealService);
-	private _toastService = inject(ToastService);
+    private _fb = inject(FormBuilder);
+    private _location = inject(Location);
+    private _mealService = inject(MealService);
+    private _toastService = inject(ToastService);
 
-	foods = signal<FoodItem[]>([]);
-	foodForm!: FormGroup;
-	
-	isEditing = false;
-	editingId: number | null = null;
-	
-	isPanelOpen = false;
-	deleteId: number | null = null;
+    foods = signal<FoodItem[]>([]);
+    
+    mainFoods = computed(() => this.foods().filter(f => f.type === 'main'));
+    sideFoods = computed(() => this.foods().filter(f => f.type === 'side'));
 
-	ngOnInit() {
-		this.loadFoods();
-		this.initForm();
-	}
+    foodForm!: FormGroup;
+    
+    isEditing = false;
+    editingId: number | null = null;
+    isPanelOpen = false;
+    deleteId: number | null = null;
 
-	loadFoods() {
-		this.foods.set([
-			{ id: 1, name: 'چلو کباب کوبیده', type: 'main' },
-			{ id: 2, name: 'زرشک پلو با مرغ', type: 'main' },
-			{ id: 101, name: 'نوشابه', type: 'side' },
-			{ id: 102, name: 'ماست موسیر', type: 'side' },
-		]);
-	}
+    ngOnInit() {
+        this.loadFoods();
+        this.initForm();
+    }
 
-	initForm() {
-		this.foodForm = this._fb.group({
-			name: ['', [Validators.required, Validators.minLength(3)]],
-			type: ['main', [Validators.required]]
-		});
-	}
+    loadFoods() {
+        this.foods.set([
+            { id: 1, name: 'چلو کباب کوبیده', type: 'main' },
+            { id: 2, name: 'زرشک پلو با مرغ', type: 'main' },
+            { id: 3, name: 'قورمه سبزی', type: 'main' },
+            { id: 101, name: 'نوشابه قوطی', type: 'side' },
+            { id: 102, name: 'ماست موسیر', type: 'side' },
+            { id: 103, name: 'دوغ محلی', type: 'side' },
+        ]);
+    }
 
-	openPanel(food?: FoodItem) {
-		this.isPanelOpen = true;
-		
-		if (food) {
-			this.isEditing = true;
-			this.editingId = food.id;
-			this.foodForm.patchValue({
-				name: food.name,
-				type: food.type
-			});
-		} else {
-			this.isEditing = false;
-			this.editingId = null;
-			this.foodForm.reset({ type: 'main' });
-		}
-	}
+    initForm() {
+        this.foodForm = this._fb.group({
+            name: ['', [Validators.required, Validators.minLength(3)]],
+            type: ['main', [Validators.required]]
+        });
+    }
 
-	closePanel() {
-		this.isPanelOpen = false;
-	}
+    openPanel(food?: FoodItem) {
+        this.isPanelOpen = true;
+        
+        if (food) {
+            this.isEditing = true;
+            this.editingId = food.id;
+            this.foodForm.patchValue({
+                name: food.name,
+                type: food.type
+            });
+        } else {
+            this.isEditing = false;
+            this.editingId = null;
+            this.foodForm.reset({ type: 'main' });
+        }
+    }
 
-	saveFood() {
-		if (this.foodForm.invalid) {
-			this.foodForm.markAllAsTouched();
-			return;
-		}
+    closePanel() {
+        this.isPanelOpen = false;
+    }
 
-		const formValue = this.foodForm.value;
+    saveFood() {
+        if (this.foodForm.invalid) {
+            this.foodForm.markAllAsTouched();
+            return;
+        }
 
-		if (this.isEditing && this.editingId) {
-			this.foods.update(list => 
-				list.map(f => f.id === this.editingId ? { ...f, ...formValue } : f)
-			);
-			this._toastService.show('موفق', 'غذا با موفقیت ویرایش شد.', 'success');
-		} else {
-			const newId = Date.now();
-			this.foods.update(list => [...list, { id: newId, ...formValue }]);
-			this._toastService.show('موفق', 'غذای جدید اضافه شد.', 'success');
-		}
+        const formValue = this.foodForm.value;
 
-		this.closePanel();
-	}
+        if (this.isEditing && this.editingId) {
+            this.foods.update(list => 
+                list.map(f => f.id === this.editingId ? { ...f, ...formValue } : f)
+            );
+            this._toastService.show('موفق', 'غذا با موفقیت ویرایش شد.', 'success');
+        } else {
+            const newId = Date.now();
+            this.foods.update(list => [...list, { id: newId, ...formValue }]);
+            this._toastService.show('موفق', 'غذای جدید اضافه شد.', 'success');
+        }
 
-	deleteFood(id: number) {
+        this.closePanel();
+    }
+
+    deleteFood(id: number) {
         this.deleteId = id;
     }
 
-	confirmDelete() {
+    confirmDelete() {
         if (this.deleteId) {
             this.foods.update(list => list.filter(f => f.id !== this.deleteId));
             this._toastService.show('حذف', 'مورد با موفقیت حذف شد.', 'warning');
@@ -109,11 +114,11 @@ export class FoodManagement implements OnInit {
         }
     }
 
-	cancelDelete() {
+    cancelDelete() {
         this.deleteId = null;
     }
 
-	goBack() {
-		this._location.back();
-	}
+    goBack() {
+        this._location.back();
+    }
 }
