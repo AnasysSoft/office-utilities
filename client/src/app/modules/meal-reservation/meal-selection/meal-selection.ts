@@ -19,6 +19,7 @@ interface CalendarDay {
 	isMenuSet?: boolean;
     mainCount?: number;
     sideCount?: number;
+	isFinalized?: boolean;
 }
 
 interface WeekGroup {
@@ -104,7 +105,8 @@ export class MealSelection implements OnInit {
 					quantity: reserved?.quantity || 0,
 					isMenuSet: menuStatus.isMenuSet,
 					mainCount: menuStatus.mainCount,
-            		sideCount: menuStatus.sideCount
+            		sideCount: menuStatus.sideCount,
+					isFinalized: menuStatus.isFinalized
 				});
 
 				startPointer.setDate(startPointer.getDate() + 1);

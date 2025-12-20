@@ -123,13 +123,13 @@
                             </div>
 
                             <div class="h-[44px] xl:h-[50px] shrink-0 w-full mt-auto flex items-center justify-center border-t transition-colors duration-300 px-2 text-center relative overflow-hidden"
-                                 [ngClass]="{
+                                [ngClass]="{
                                     'border-border/30 bg-primary/5 group-hover:border-primary': !day.selectedFood && !day.isHoliday && !day.isPast,
-                                    'group-hover:bg-primary group-hover:border-primary': !day.isMenuSet && !day.isPast && !day.isHoliday && !day.selectedFood,
+                                    'group-hover:bg-primary group-hover:border-primary': currentMode === 'user' && !day.isPast && !day.isHoliday && !day.selectedFood, 
                                     'bg-primary/10 border-primary/20': day.selectedFood && !day.isPast,
                                     'border-accent/10 bg-accent/5': day.isHoliday && !day.isPast,
                                     'border-transparent bg-transparent': day.isPast
-                                 }">
+                                }">
 
                                 @if (day.isPast) {
                                     <div class="text-[10px] text-text-muted/40 font-bold">پایان یافته</div>
@@ -140,17 +140,14 @@
                                 }
 
                                 @else if (currentMode === 'admin') {
-                                    
                                     @if (day.isMenuSet) {
                                         <div class="flex flex-col items-center justify-center gap-0.5 w-full animate-fade-in">
                                             <div class="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200 shadow-sm">
                                                 <icon name="check-circle" className="w-3.5 h-3.5"></icon>
                                                 <span class="text-[10px] font-bold">منو فعال</span>
                                             </div>
-                                            
                                             <div class="flex items-center gap-1 text-[9px] text-text-muted/70 font-medium dir-rtl">
                                                 <span>{{ day.mainCount }} غذا</span>
-                                                
                                                 @if (day.sideCount && day.sideCount > 0) {
                                                     <span class="opacity-60">+</span>
                                                     <span>{{ day.sideCount }} مخلفات</span>
@@ -159,12 +156,31 @@
                                         </div>
                                     } @else {
                                         <div class="w-full flex items-center justify-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                            <icon name="plus-circle" className="w-4 h-4 text-text-muted group-hover:text-white transition-colors"></icon>
-                                            <span class="text-[10px] font-bold text-text-muted group-hover:text-white transition-colors">تنظیم منو</span>
+                                            <icon name="plus-circle" className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors"></icon>
+                                            <span class="text-[10px] font-bold text-text-muted group-hover:text-primary transition-colors">تنظیم منو</span>
                                         </div>
                                     }
                                 } 
                                 
+                                @else if (currentMode === 'reservations') {
+                                    @if (day.isFinalized) {
+                                        <div class="flex flex-col items-center justify-center gap-1 w-full animate-fade-in">
+                                            <div class="flex items-center gap-1 text-white bg-green-500 px-2 py-0.5 rounded-full shadow-sm">
+                                                <icon name="check-circle" className="w-3.5 h-3.5"></icon>
+                                                <span class="text-[10px] font-bold">نهایی شد</span>
+                                            </div>
+                                            <span class="text-[9px] text-text-muted hover:text-primary cursor-pointer transition-colors mt-0.5">مشاهده</span>
+                                        </div>
+                                    } @else {
+                                        <div class="w-full flex items-center justify-center gap-2 opacity-70 group-hover:opacity-100 transition-all">
+                                            <div class="bg-white border border-border p-1 rounded-md shadow-sm group-hover:border-primary/50 transition-colors">
+                                                <icon name="users" className="w-3.5 h-3.5 text-text-muted group-hover:text-primary"></icon>
+                                            </div>
+                                            <span class="text-[10px] font-bold text-text-main group-hover:text-primary">مشاهده لیست</span>
+                                        </div>
+                                    }
+                                }
+
                                 @else {
                                     @if (!day.selectedFood) {
                                         <div class="w-full flex items-center justify-center gap-2 group/btn cursor-pointer">
@@ -174,7 +190,6 @@
                                             </div>
                                         </div>
                                     }
-
                                     @if (day.selectedFood) {
                                         <div class="flex flex-col items-center justify-center w-full h-full gap-0.5 relative">
                                             @if (day.quantity && day.quantity > 1) {
@@ -192,7 +207,6 @@
                                 }
 
                             </div>
-
                         </div>
                     }
                 </div>

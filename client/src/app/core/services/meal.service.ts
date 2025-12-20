@@ -24,6 +24,7 @@ export interface DailyMenuStatus {
 	isMenuSet: boolean;
 	mainCount: number;
   	sideCount: number;
+	isFinalized?: boolean;
 }
 
 @Injectable({
@@ -104,8 +105,28 @@ export class MealService {
 		});
 	}
 
+	finalizeDailyList(dateIso: string) {
+		this.dailyMenus.update((map) => {
+		const newMap = new Map(map);
+		const currentStatus = newMap.get(dateIso);
+		
+		if (currentStatus) {
+			newMap.set(dateIso, { ...currentStatus, isFinalized: true });
+		} else {
+			newMap.set(dateIso, { 
+				dateIso, 
+				isMenuSet: false, 
+				mainCount: 0, 
+				sideCount: 0, 
+				isFinalized: true 
+			});
+		}
+		return newMap;
+		});
+	}
+
 	getDailyMenuStatus(dateIso: string): DailyMenuStatus {
 		const status = this.dailyMenus().get(dateIso);
-		return status || { dateIso, isMenuSet: false, mainCount: 0, sideCount: 0 };
+		return status || { dateIso, isMenuSet: false, mainCount: 0, sideCount: 0, isFinalized: false };
 	}
 }

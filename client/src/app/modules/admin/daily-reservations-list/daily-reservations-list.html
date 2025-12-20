@@ -1,73 +1,207 @@
-<div class="flex flex-col h-full bg-background animate-fade-in pb-10">
-    
-    <div class="flex items-center gap-3 p-4 border-b border-border/50 sticky top-0 bg-surface/90 backdrop-blur z-20">
-        <button (click)="goBack()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <icon name="arrow-right" className="w-5 h-5 text-text-muted"></icon>
-        </button>
-        <div>
-            <h2 class="text-lg font-bold text-text-main">لیست رزروها</h2>
-            <span class="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md mt-1 inline-block">
-                {{ persianDateLabel }}
-            </span>
+<div class="flex flex-col h-full bg-[#f4f5f8] animate-fade-in relative">
+    <div class="sticky top-0 z-30 bg-[#f4f5f8]/95 backdrop-blur-md pb-2 pt-4 px-4 flex flex-col gap-4 shadow-sm border-b border-white/50">
+        <div class="flex items-center gap-3">
+            <button (click)="goBack()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-gray-200 text-text-muted hover:text-text-main shadow-sm transition-transform active:scale-90 cursor-pointer">
+                <icon name="arrow-right" className="w-5 h-5"></icon>
+            </button>
+
+            <button (click)="printList()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-gray-200 text-text-muted hover:text-primary shadow-sm transition-transform active:scale-90 cursor-pointer print:hidden">
+                <icon name="printer" className="w-5 h-5"></icon>
+            </button>
+            
+            <div class="flex-1 relative h-11">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                    <icon name="magnifying-glass" className="w-5 h-5 text-gray-400"></icon>
+                </div>
+                <input type="text" 
+                       [ngModel]="searchTerm()" 
+                       (ngModelChange)="searchTerm.set($event)"
+                       placeholder="جستجو در رزروهای {{ persianDateLabel }}..." 
+                       class="w-full h-full rounded-2xl bg-white border border-gray-200 pl-4 pr-11 text-sm font-bold text-text-main placeholder-gray-400 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all shadow-sm outline-none">
+            </div>
+        </div>
+
+        <div class="flex items-stretch gap-3">
+            <div class="flex items-center gap-3 bg-white px-4 py-1 rounded-2xl border border-gray-200 shadow-sm shrink-0">
+                <div class="relative w-10 h-10 flex items-center justify-center">
+                    <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
+                        <path class="text-primary transition-all duration-1000 ease-out" [attr.stroke-dasharray]="stats().percentage + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+                    </svg>
+                    <span class="absolute text-[9px] font-black text-text-main pt-0.5">{{ stats().percentage }}%</span>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="text-[9px] text-text-muted font-bold">وضعیت تایید</span>
+                    <span class="text-xs font-black text-text-main">{{ stats().approved }} <span class="text-gray-300 font-light">/</span> {{ stats().total }}</span>
+                </div>
+            </div>
+
+            <div class="flex-1 flex bg-gray-200/60 p-1 rounded-2xl">
+                <button (click)="setTab('all')" 
+                        class="flex-1 rounded-xl text-[10px] font-bold transition-all duration-300 cursor-pointer"
+                        [ngClass]="activeTab() === 'all' ? 'bg-white text-text-main shadow-sm' : 'text-text-muted hover:bg-white/50'">
+                    همه
+                </button>
+                
+                <button (click)="setTab('pending')" 
+                        class="flex-1 rounded-xl text-[10px] font-bold transition-all duration-300 cursor-pointer"
+                        [ngClass]="activeTab() === 'pending' ? 'bg-white text-text-main shadow-sm' : 'text-text-muted hover:bg-white/50'">
+                    مانده
+                </button>
+                
+                <button (click)="setTab('approved')" 
+                        class="flex-1 rounded-xl text-[10px] font-bold transition-all duration-300 cursor-pointer"
+                        [ngClass]="activeTab() === 'approved' ? 'bg-white text-text-main shadow-sm' : 'text-text-muted hover:bg-white/50'">
+                    تایید
+                </button>
+
+            </div>
         </div>
     </div>
 
-    <div class="p-4 md:p-6 flex flex-col gap-4">
+    <div class="flex-1 overflow-y-auto px-4 pb-24 pt-3 print:hidden"> @if (filteredReservations().length === 0) {
+            <div class="flex flex-col items-center justify-center h-64 opacity-40">
+                <icon name="face-frown" className="w-12 h-12 text-text-muted mb-3"></icon>
+                <span class="text-sm font-bold text-text-muted">موردی یافت نشد</span>
+            </div>
+        } 
         
-        <div class="flex gap-3 overflow-x-auto pb-2">
-            <div class="flex-1 min-w-[140px] bg-surface border border-border rounded-xl p-3 flex flex-col items-center justify-center shadow-sm">
-                <span class="text-2xl font-black text-primary">{{ reservations.length }}</span>
-                <span class="text-[10px] text-text-muted">کل سفارشات</span>
-            </div>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            @for (res of filteredReservations(); track res.id) {
+                <div (click)="toggleApproval(res)"
+                     class="group relative bg-white p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer select-none overflow-hidden hover:-translate-y-1 hover:shadow-md"
+                     [ngClass]="res.isApproved ? 'border-green-500/50 shadow-sm' : 'border-white shadow-sm hover:border-gray-200'">
+                    
+                    @if (res.isApproved) {
+                        <div class="absolute inset-0 bg-green-50/30 pointer-events-none"></div>
+                    }
 
-        @if (reservations.length === 0) {
-            <div class="flex flex-col items-center justify-center py-10 opacity-50">
-                <icon name="clipboard-document-list" className="w-12 h-12 text-text-muted mb-2"></icon>
-                <span class="text-sm font-bold text-text-muted">هنوز سفارشی ثبت نشده است</span>
-            </div>
-        } @else {
-            <div class="flex flex-col gap-3">
-                @for (res of reservations; track res.id) {
-                    <div (click)="toggleApproval(res)"
-                         class="group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none bg-surface"
-                         [ngClass]="res.isApproved ? 'border-green-500 shadow-sm' : 'border-border hover:border-primary/50'">
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold bg-gray-100 text-text-muted shrink-0">
-                                {{ res.userName.charAt(0) }}
-                            </div>
-                            
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold text-text-main group-hover:text-primary transition-colors">
-                                    {{ res.userName }}
-                                </span>
-                                <span class="text-[10px] text-text-muted">{{ res.personnelCode }}</span>
+                    <div class="relative flex items-start gap-3 z-10">
+                        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-black shrink-0 transition-colors"
+                             [ngClass]="res.isApproved ? 'bg-green-100 text-green-700' : 'bg-[#f4f5f8] text-text-muted'">
+                            {{ res.userName.charAt(0) }}
+                        </div>
+
+                        <div class="flex-1 flex flex-col min-w-0">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col min-w-0">
+                                    <h3 class="text-xs font-bold text-text-main truncate pl-1"
+                                        [class.opacity-60]="res.isApproved">
+                                        {{ res.userName }}
+                                    </h3>
+                                    <span class="text-[10px] text-text-muted font-mono mt-0.5">{{ res.personnelCode }}</span>
+                                </div>
                                 
-                                <div class="flex items-center gap-1 mt-1 text-xs">
-                                    <span class="font-medium text-text-main">{{ res.foodName }}</span>
-                                    @if (res.sideName) {
-                                        <span class="text-text-muted/60">+</span>
-                                        <span class="text-text-muted">{{ res.sideName }}</span>
-                                    }
-                                    @if (res.quantity > 1) {
-                                        <span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-bold mr-1">
-                                            {{ res.quantity }}x
-                                        </span>
-                                    }
+                                <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0 ml-1"
+                                     [ngClass]="res.isApproved ? 'bg-green-500 border-green-500' : 'border-gray-300 bg-transparent'">
+                                    <icon *ngIf="res.isApproved" name="check" className="w-3.5 h-3.5 text-white animate-scale-in"></icon>
                                 </div>
                             </div>
+                            
+                            <div class="mt-2.5 flex flex-wrap gap-1.5">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold"
+                                     [ngClass]="res.isApproved ? 'bg-white/80 text-text-main/70' : 'bg-gray-100 text-text-main'">
+                                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="res.isApproved ? 'bg-green-400' : 'bg-primary'"></span>
+                                    <span>{{ res.foodName }}</span>
+                                </div>
+                                
+                                @if (res.sideName) {
+                                    <div class="flex items-center px-2 py-1 rounded-lg text-[10px] font-medium"
+                                         [ngClass]="res.isApproved ? 'bg-white/50 text-text-muted' : 'bg-gray-50 text-text-muted'">
+                                        <span>{{ res.sideName }}</span>
+                                    </div>
+                                }
+                                
+                                @if (res.quantity > 1) {
+                                    <div class="px-1.5 py-1 rounded-lg text-[10px] font-black"
+                                         [ngClass]="res.isApproved ? 'bg-green-100 text-green-700' : 'bg-primary/10 text-primary'">
+                                        x{{ res.quantity }}
+                                    </div>
+                                }
+                            </div>
                         </div>
-
-                        <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300"
-                             [ngClass]="res.isApproved ? 'bg-green-500 border-green-500 scale-110' : 'border-border group-hover:border-primary bg-white'">
-                            <icon *ngIf="res.isApproved" name="check" className="w-4 h-4 text-white animate-fade-in"></icon>
-                        </div>
-
                     </div>
-                }
-            </div>
-        }
+                </div>
+            }
+        </div>
+    </div>
+    <div class="fixed bottom-6 left-0 right-0 flex justify-center z-40 print:hidden pointer-events-none">
+        <button (click)="finalizeList()" class="cursor-pointer pointer-events-auto flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-8 py-3.5 rounded-2xl shadow-lg shadow-primary/30 transition-all active:scale-95 active:shadow-sm font-bold text-sm">
+            <icon name="check-circle" className="w-5 h-5"></icon>
+            <span>ثبت نهایی لیست</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded-md text-xs ml-1">{{ stats().approved }} نفر</span>
+        </button>
+    </div>
 
+    <div id="print-section" class="hidden print:block">
+        
+        <div class="flex justify-between items-end border-b-2 border-black pb-4 mb-6">
+            <div class="flex flex-col">
+                <h1 class="text-2xl font-black text-black">لیست رزرو غذا</h1>
+                <span class="text-sm text-black mt-2">تاریخ: <b>{{ persianDateLabel }}</b></span>
+            </div>
+            <div class="flex flex-col items-end text-sm text-black">
+                <div class="flex gap-6">
+                    <span>تعداد کل: <b>{{ stats().total }}</b></span>
+                    <span>تعداد تایید شده: <b>{{ stats().approved }}</b></span>
+                </div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px; text-align: center;">#</th>
+                    <th>نام و نام خانوادگی</th>
+                    <th style="width: 100px;">کد پرسنلی</th>
+                    <th>غذای اصلی</th>
+                    <th>مخلفات</th>
+                    <th style="width: 60px; text-align: center;">تعداد</th>
+                    <th style="width: 100px; text-align: center;">وضعیت</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (res of filteredReservations(); track res.id; let i = $index) {
+                    <tr>
+                        <td style="text-align: center;">{{ i + 1 }}</td>
+                        
+                        <td class="font-bold">{{ res.userName }}</td>
+                        
+                        <td>{{ res.personnelCode }}</td>
+                        
+                        <td>{{ res.foodName }}</td>
+                        
+                        <td>{{ res.sideName || '-' }}</td>
+
+                        <td style="text-align: center;">
+                            @if (res.quantity > 1) {
+                                <b>{{ res.quantity }}</b>
+                            } @else {
+                                1
+                            }
+                        </td>
+                        
+                        <td style="text-align: center;">
+                            @if (res.isApproved) {
+                                <span>✔ تایید</span>
+                            } @else {
+                                <span>---</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="mt-12 flex justify-between text-sm text-black">
+            <div class="flex flex-col gap-8">
+                <span>امضا تحویل دهنده:</span>
+                <div class="border-b border-black w-48"></div>
+            </div>
+            <div class="flex flex-col gap-8">
+                <span>امضا تحویل گیرنده:</span>
+                <div class="border-b border-black w-48"></div>
+            </div>
+        </div>
     </div>
 </div>
