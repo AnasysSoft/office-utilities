@@ -201,3 +201,16 @@ input[type=number] {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
 }
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(12deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(12deg);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}

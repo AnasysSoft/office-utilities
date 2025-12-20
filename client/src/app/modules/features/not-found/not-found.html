@@ -1,0 +1,33 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-background relative overflow-hidden font-sans text-center p-4" dir="rtl">
+    <div class="absolute top-[-10%] right-[-5%] w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-0 pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-secondary/5 rounded-full blur-3xl -z-0 pointer-events-none"></div>
+
+    <div class="relative z-10 flex flex-col items-center animate-fade-in max-w-md w-full">
+        
+        <div class="relative mb-6">
+            <h1 class="text-[150px] font-black text-text-muted/10 leading-none select-none">404</h1>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-24 h-24 bg-surface rounded-3xl shadow-card border border-border/60 flex items-center justify-center text-primary rotate-12 animate-float">
+                    <icon name="face-frown" className="w-12 h-12"></icon>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-text-main mb-3">صفحه مورد نظر یافت نشد!</h2>
+        <p class="text-sm text-text-muted leading-relaxed mb-8 max-w-xs mx-auto">
+            متاسفانه صفحه‌ای که به دنبال آن هستید وجود ندارد یا حذف شده است.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            <button (click)="goBack()" class="w-full sm:w-auto h-12 px-8 rounded-xl bg-primary text-white text-sm font-bold shadow-lg shadow-primary/25 hover:bg-primary-hover active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2">
+                <icon name="arrow-right" className="w-4 h-4"></icon>
+                <span>بازگشت به قبل</span>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="absolute bottom-6 text-[10px] text-text-muted/40 font-mono">
+        Error Code: 404_NOT_FOUND
+    </div>
+</div>

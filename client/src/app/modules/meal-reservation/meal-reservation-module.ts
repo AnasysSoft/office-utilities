@@ -9,6 +9,7 @@ import { DailyMenuManagement } from '../admin/daily-menu-management/daily-menu-m
 import { DailyReservationsList } from '../admin/daily-reservations-list/daily-reservations-list';
 import { UserProfile } from '../features/user-profile/user-profile';
 import { FoodManagement } from '../admin/food-management/food-management';
+import { NotFoundComponent } from '../features/not-found/not-found';
 
 const routes: Routes = [
   {path: '', component: MealReservationDashboard, 
@@ -20,7 +21,7 @@ const routes: Routes = [
         { path: 'admin/daily-reservations', component: DailyReservationsList },
         { path: 'admin/foods', component: FoodManagement },
         {path: 'profile', component: UserProfile},
-        {path: '**', component: MealSelection},
+        { path: '**', component: NotFoundComponent }
     ]}, 
    // {path: 'list', component: MealsList} 
 ]
