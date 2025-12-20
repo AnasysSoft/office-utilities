@@ -90,4 +90,9 @@ export class MealReservationDashboard implements OnInit {
         // this._authService.logout();
         this._router.navigate(['/login']); 
     }
+
+    navigateToFoodManagement() {
+        this.isAdminDropdownOpen = false;
+        this._router.navigate(['admin/foods'], { relativeTo: this._activatedRoute });
+    }
 }

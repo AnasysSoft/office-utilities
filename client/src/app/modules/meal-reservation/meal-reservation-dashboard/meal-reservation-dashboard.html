@@ -80,6 +80,13 @@
                                 <span>لیست رزروها</span>
                             </button>
 
+                            <button (click)="navigateToFoodManagement()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-primary/5 hover:text-primary text-text-main text-xs font-bold transition-colors text-right">
+                                <div class="p-1 rounded-md bg-background border border-border/50">
+                                    <icon name="clipboard-document-list" className="w-4 h-4"></icon>
+                                </div>
+                                <span>مدیریت غذاها</span>
+                            </button>
+
                             <button class="w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-red-50 hover:text-red-500 text-text-muted text-xs font-medium transition-colors text-right cursor-not-allowed opacity-60">
                                 <div class="p-1 rounded-md bg-background border border-border/50">
                                     <icon name="chart-bar" className="w-4 h-4"></icon>
@@ -144,6 +151,13 @@
                                 <icon name="clipboard-check" className="w-4 h-4"></icon>
                             </div>
                             <span>لیست رزروها</span>
+                        </button>
+
+                        <button (click)="navigateToFoodManagement()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-primary/5 hover:text-primary text-text-main text-xs font-bold transition-colors text-right">
+                            <div class="p-1 rounded-md bg-background border border-border/50">
+                                <icon name="clipboard-document-list" className="w-4 h-4"></icon>
+                            </div>
+                            <span>مدیریت غذاها</span>
                         </button>
 
                         <button class="cursor-pointer w-full flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-text-muted text-xs font-medium transition-colors text-right cursor-not-allowed opacity-60">
