@@ -20,6 +20,7 @@ interface CalendarDay {
     mainCount?: number;
     sideCount?: number;
 	isFinalized?: boolean;
+	guestCount?: number;
 }
 
 interface WeekGroup {
@@ -43,6 +44,13 @@ export class MealSelection implements OnInit {
 	currentWeekIndex: number = 0;
 
 	currentMode: 'user' | 'admin' | 'reservations' = 'user';
+
+	private getLocalIsoDate(date: Date): string {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
 	ngOnInit() {
 		this._route.queryParams.subscribe(params => {
@@ -85,11 +93,12 @@ export class MealSelection implements OnInit {
 				const isPast = currentLoopDate < today;
 				const isToday = currentLoopDate.getTime() === today.getTime();
 
-				const dateIso = startPointer.toISOString().split('T')[0];
-				const reserved = this._mealService.getReservation(dateIso);
+				const dateIso = this.getLocalIsoDate(startPointer);
 				const isFriday = startPointer.getDay() === 5;
 
-				const menuStatus = this._mealService.getDailyMenuStatus(dateIso);
+				const reserved = this._mealService.getReservation(dateIso);
+                const guestCount = this._mealService.getGuestCountForDay(dateIso);
+                const menuStatus = this._mealService.getDailyMenuStatus(dateIso);
 
 				weekDays.push({
 					dateObj: new Date(startPointer),
@@ -106,7 +115,8 @@ export class MealSelection implements OnInit {
 					isMenuSet: menuStatus.isMenuSet,
 					mainCount: menuStatus.mainCount,
             		sideCount: menuStatus.sideCount,
-					isFinalized: menuStatus.isFinalized
+					isFinalized: menuStatus.isFinalized,
+					guestCount: guestCount
 				});
 
 				startPointer.setDate(startPointer.getDate() + 1);

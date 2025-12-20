@@ -30,11 +30,19 @@ export class GuestReservation extends baseForm {
 	guestDays: GuestDay[] = [];
 	showCalendar = false;
 
+	private getLocalIsoDate(date: Date): string {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
 	override initialForm(): void {
 		this.entityForm = this._formBuilder.group({
 			fullName: [null, [Validators.required]],
 			checkIn: [null, [Validators.required]],
 			checkOut: [null, [Validators.required]],
+			guestCount: [1, [Validators.required, Validators.min(1)]]
 		});
 
 		this.validationMessages = {
@@ -45,51 +53,58 @@ export class GuestReservation extends baseForm {
 	}
 
 	generateGuestCalendar() {
-		if (this.entityForm.invalid) {
-			this.entityForm.markAllAsTouched();
-			return;
-		}
+        if (this.entityForm.invalid) {
+            this.entityForm.markAllAsTouched();
+            return;
+        }
 
-		const { checkIn, checkOut } = this.entityForm.value;
-		const startDate = new Date(checkIn);
-		const endDate = new Date(checkOut);
-		if (endDate < startDate) {
-			alert('تاریخ خروج نمی‌تواند قبل از تاریخ ورود باشد!');
-			return;
-		}
+        const guestName = this.entityForm.get('fullName')?.value;
+        const { checkIn, checkOut } = this.entityForm.value;
+        
+        const startDate = new Date(checkIn);
+        startDate.setHours(0, 0, 0, 0);
+        
+        const endDate = new Date(checkOut);
+        endDate.setHours(0, 0, 0, 0);
 
-		this.guestDays = [];
-		const formatterDay = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' });
-		const formatterNumber = new Intl.DateTimeFormat('fa-IR', { day: 'numeric' });
-		const formatterMonth = new Intl.DateTimeFormat('fa-IR', { month: 'long' });
-		const formatterFull = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        if (endDate < startDate) {
+            alert('تاریخ خروج نمی‌تواند قبل از تاریخ ورود باشد!');
+            return;
+        }
 
-		for (let dt = new Date(startDate); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
-		const dateIso = dt.toISOString().split('T')[0];
-		
-		const reserved = this._mealService.getReservation(dateIso);
+        this.guestDays = [];
+        const formatterDay = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' });
+        const formatterNumber = new Intl.DateTimeFormat('fa-IR', { day: 'numeric' });
+        const formatterMonth = new Intl.DateTimeFormat('fa-IR', { month: 'long' });
+        const formatterFull = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
-		this.guestDays.push({
-			dateObj: new Date(dt),
-			dateIso: dateIso,
-			dayName: formatterDay.format(dt),
-			dayNumber: formatterNumber.format(dt),
-			monthName: formatterMonth.format(dt),
-			fullDate: formatterFull.format(dt),
-			selectedFood: reserved?.selectedFoodName,
-			quantity: reserved?.quantity
-		});
-		}
+        for (let dt = new Date(startDate); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
+            const dateIso = this.getLocalIsoDate(dt);
+            
+            const reserved = this._mealService.getReservation(dateIso, guestName);
 
-		this.showCalendar = true;
-	}
+            this.guestDays.push({
+                dateObj: new Date(dt),
+                dateIso: dateIso,
+                dayName: formatterDay.format(dt),
+                dayNumber: formatterNumber.format(dt),
+                monthName: formatterMonth.format(dt),
+                fullDate: formatterFull.format(dt),
+                selectedFood: reserved?.selectedFoodName,
+                quantity: reserved?.quantity
+            });
+        }
+
+        this.showCalendar = true;
+    }
 
 	onSelectDay(day: GuestDay) {
 		this._router.navigate(['/rsv/list'], {
 			queryParams: { 
 				date: day.dateIso, 
 				persianDate: day.fullDate,
-				guestName: this.entityForm.get('fullName')?.value
+				guestName: this.entityForm.get('fullName')?.value,
+				guestCount: this.entityForm.get('guestCount')?.value
 			}
 		});
 	}

@@ -26,6 +26,8 @@ export class MealsList implements OnInit {
 	targetDate: string = '';
 	persianDateLabel: string = '';
 
+	guestName: string | null = null;
+
 	mainCourses: SimpleMeal[] = [
 		{ id: 1, name: 'چلو کباب کوبیده زعفرانی', type: 'main' },
 		{ id: 2, name: 'زرشک پلو با مرغ مجلسی', type: 'main' },
@@ -48,15 +50,22 @@ export class MealsList implements OnInit {
 
 	ngOnInit() {
 		this._route.queryParams.subscribe((params) => {
-		this.targetDate = params['date'];
-		this.persianDateLabel = params['persianDate'];
+			this.targetDate = params['date'];
+			this.persianDateLabel = params['persianDate'];
+			this.guestName = params['guestName'] || null;
+			const defaultGuestCount = params['guestCount'] ? +params['guestCount'] : 1;
 
-		const existing = this._mealService.getReservation(this.targetDate);
+			const existing = this._mealService.getReservation(this.targetDate, this.guestName || undefined);
+		
 			if (existing) {
 				this.selectedMainId = existing.selectedFoodId || null;
 				this.selectedSideId = existing.selectedSideId || null;
-				this.quantity = existing.quantity || 1;
-			}
+				this.quantity = existing.quantity || defaultGuestCount;
+			}else {
+                this.selectedMainId = null;
+                this.selectedSideId = null;
+				this.quantity = defaultGuestCount;
+            }
 		});
 	}
 
@@ -74,62 +83,57 @@ export class MealsList implements OnInit {
 		this.saveReservation();
 	}
 
-updateQuantity(delta: number) {
-    const newQty = this.quantity + delta;
-    if (newQty >= 1) {
-      this.quantity = newQty;
-    }
-  }
+	updateQuantity(delta: number) {
+		const newQty = this.quantity + delta;
+		if (newQty >= 1) {
+			this.quantity = newQty;
+		}
+	}
+	
+	onQuantityInput(event: Event) {
+		const input = event.target as HTMLInputElement;
+		let val = parseInt(input.value);
 
-  // تغییر تعداد با تایپ کردن
-  // فقط عدد را تغییر می‌دهد، ذخیره نمی‌کند
-  onQuantityInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    let val = parseInt(input.value);
+		if (isNaN(val) || val < 1) {
+			val = 1;
+		}
+		if (val > 99) val = 99;
+		this.quantity = val;
+	}
 
-    if (isNaN(val) || val < 1) {
-      val = 1;
-    }
-    if (val > 99) val = 99; // محدودیت نمایشی
+	confirmSelection() {
+		if (!this.selectedMainId) {
+			this._toastService.show('خطا', 'لطفاً ابتدا یک غذای اصلی انتخاب کنید.', 'warning');
+			return;
+		}
 
-    this.quantity = val;
-  }
+		this.saveReservation();
+	}
 
-  // متد جدید: فقط وقتی دکمه ثبت زده شد اجرا می‌شود
-  confirmSelection() {
-    // بررسی اینکه آیا غذای اصلی انتخاب شده است؟
-    if (!this.selectedMainId) {
-        this._toastService.show('خطا', 'لطفاً ابتدا یک غذای اصلی انتخاب کنید.', 'warning');
-        return;
-    }
+	private saveReservation() {
+		const mainName = this.mainCourses.find(m => m.id === this.selectedMainId)?.name || '';
+		const sideName = this.sideDishes.find(s => s.id === this.selectedSideId)?.name || '';
 
-    this.saveReservation();
-  }
+		let displayName = mainName;
+		if (sideName && sideName !== 'بدون نوشیدنی/دسر') {
+			displayName += ` + ${sideName}`;
+		}
 
-  private saveReservation() {
-    const mainName = this.mainCourses.find(m => m.id === this.selectedMainId)?.name || '';
-    const sideName = this.sideDishes.find(s => s.id === this.selectedSideId)?.name || '';
-
-    let displayName = mainName;
-    if (sideName && sideName !== 'بدون نوشیدنی/دسر') {
-      displayName += ` + ${sideName}`;
-    }
-
-    this._mealService.setReservation(
-        this.targetDate, 
-        displayName, 
-        this.selectedMainId || 0, 
-        this.selectedSideId, 
-        this.quantity
-    );
-    
-    this._toastService.show(
-      'ثبت شد',
-      `سفارش شما (${this.quantity} پرس) با موفقیت ذخیره شد.`,
-      'success'
-    );
-    
-    // اختیاری: بعد از ثبت برگردد عقب
-    // setTimeout(() => this.goBack(), 1000); 
-  }
+		this._mealService.setReservation(
+			this.targetDate, 
+			displayName, 
+			this.selectedMainId || 0, 
+			this.selectedSideId, 
+			this.quantity,
+			this.guestName || undefined
+		);
+		
+		this._toastService.show(
+		'ثبت شد',
+		`سفارش شما (${this.quantity} پرس) با موفقیت ذخیره شد.`,
+		'success'
+		);
+		
+		// setTimeout(() => this.goBack(), 1000); 
+	}
 }

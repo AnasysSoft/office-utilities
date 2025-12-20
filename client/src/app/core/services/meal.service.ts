@@ -6,6 +6,8 @@ export interface DayReservation {
 	selectedSideId?: number;
 	selectedFoodName?: string;
 	quantity: number;
+	isGuest?: boolean;
+  	guestName?: string;
 }
 
 export interface UserDailyReservation {
@@ -37,22 +39,53 @@ export class MealService {
 
 	private dailyUserReservations = signal<Map<string, UserDailyReservation[]>>(new Map());
 
+	private userReservations = signal<Map<string, DayReservation>>(new Map());
+
+  	private guestReservations = signal<Map<string, DayReservation>>(new Map());
+
 	constructor() {
 		this.seedMockData();
 	}
 
-	setReservation(dateIso: string, foodName: string, mainId: number, sideId: number | null, quantity: number) {
-		this.reservations.update((map) => {
-			const newMap = new Map(map);
-				newMap.set(dateIso, { 
-					dateIso, 
-					selectedFoodName: foodName, 
-					selectedFoodId: mainId,
-					selectedSideId: sideId || undefined,
-					quantity: quantity 
-				});
+	setReservation(dateIso: string, foodName: string, mainId: number, sideId: number | null, quantity: number, guestName?: string) {
+    
+		const isGuest = !!guestName;
+		const targetSignal = isGuest ? this.guestReservations : this.userReservations;
+
+		targetSignal.update((map) => {
+		const newMap = new Map(map);
+		const key = isGuest ? `${dateIso}_${guestName}` : dateIso;
+
+		newMap.set(key, { 
+			dateIso, 
+			selectedFoodName: foodName, 
+			selectedFoodId: mainId,
+			selectedSideId: sideId || undefined,
+			quantity: quantity,
+			isGuest,
+			guestName
+		});
 			return newMap;
 		});
+	}
+
+	getReservation(dateIso: string, guestName?: string) {
+		if (guestName) {
+			const key = `${dateIso}_${guestName}`;
+			return this.guestReservations().get(key);
+		} else {
+			return this.userReservations().get(dateIso);
+		}
+	}
+	
+	getGuestCountForDay(dateIso: string): number {
+		let totalGuests = 0;
+		this.guestReservations().forEach((res) => {
+			if (res.dateIso === dateIso) {
+				totalGuests += res.quantity; 
+			}
+		});
+		return totalGuests;
 	}
 
 	private seedMockData() {
@@ -86,10 +119,6 @@ export class MealService {
 			newMap.set(dateIso, updatedList);
 			return newMap;
 		});
-	}
-
-	getReservation(dateIso: string) {
-		return this.reservations().get(dateIso);
 	}
 
 	setDailyMenuStatus(dateIso: string, mainCount: number, sideCount: number) {
