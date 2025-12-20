@@ -1,6 +1,6 @@
 <div class="h-screen flex flex-col bg-background font-sans relative overflow-hidden" dir="rtl">
     <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md shadow-sm border-b border-border/50 px-6 py-3 flex items-center justify-between transition-all h-[72px]">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 relative cursor-pointer" (click)="toggleUserDropdown($event)" #userButton>
             <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
                 <icon name="user" className="w-5 h-5"></icon>
             </div>
@@ -9,6 +9,26 @@
                 <span class="text-[10px] text-text-muted">کد پرسنلی: ۱۲۳۴۵۶</span>
             </div>
         </div>
+
+        @if (isUserDropdownOpen) {
+            <div class="absolute top-[90%] right-0 w-48 bg-surface rounded-xl shadow-floating border border-border/60 p-1.5 z-50 animate-scale-in origin-top-right flex flex-col gap-1">
+                
+                <div class="px-3 py-2 border-b border-border/40 mb-1">
+                    <span class="text-xs font-bold text-text-main block">علی محمدی</span>
+                    <span class="text-[10px] text-text-muted block mt-0.5">ali.mohammadi@example.com</span>
+                </div>
+
+                <button (click)="navigateToProfile()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-primary/5 hover:text-primary text-text-main text-xs font-medium transition-colors text-right">
+                    <icon name="pencil-square" className="w-4 h-4 text-text-muted"></icon>
+                    <span>ویرایش پروفایل</span>
+                </button>
+
+                <button (click)="logout()" class="cursor-pointer w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 text-red-500 text-xs font-medium transition-colors text-right mt-1 border-t border-border/30 pt-2">
+                    <icon name="arrow-right-on-rectangle" className="w-4 h-4"></icon>
+                    <span>خروج از حساب</span>
+                </button>
+            </div>
+        }
 
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 text-text-muted bg-background/50 px-3 py-2 rounded-lg border border-border/50">

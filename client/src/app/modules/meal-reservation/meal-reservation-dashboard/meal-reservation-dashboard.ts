@@ -20,6 +20,9 @@ export class MealReservationDashboard implements OnInit {
 
     @ViewChild('adminButton') adminButton?: ElementRef;
 
+    isUserDropdownOpen = false;
+    @ViewChild('userButton') userButton?: ElementRef;
+
     ngOnInit(): void {
         this.calculateDate();
     }
@@ -44,14 +47,14 @@ export class MealReservationDashboard implements OnInit {
     }
 
 	@HostListener('document:click', ['$event']) handleOutsideClick(event: MouseEvent): void {
-        if (!this.isAdminDropdownOpen) return;
+        if (this.isAdminDropdownOpen) {
+            const clickedInsideAdmin = this.adminButton?.nativeElement?.contains(event.target);
+            if (!clickedInsideAdmin) this.isAdminDropdownOpen = false;
+        }
 
-        const clickedInsideMenu = this.adminButton?.nativeElement?.contains(
-            event.target
-        );
-
-        if (!clickedInsideMenu) {
-            this.isAdminDropdownOpen = false;
+        if (this.isUserDropdownOpen) {
+            const clickedInsideUser = this.userButton?.nativeElement?.contains(event.target);
+            if (!clickedInsideUser) this.isUserDropdownOpen = false;
         }
     }
 
@@ -66,5 +69,25 @@ export class MealReservationDashboard implements OnInit {
     private calculateDate() {
         const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
         this.currentDate = new Intl.DateTimeFormat('fa-IR', options).format(new Date());
+    }
+
+    toggleUserDropdown(event?: Event) {
+        if (event) {
+            event.stopPropagation();
+        }
+        this.isAdminDropdownOpen = false;
+        this.isUserDropdownOpen = !this.isUserDropdownOpen;
+    }
+
+    navigateToProfile() {
+        this.isUserDropdownOpen = false;
+        this._router.navigate(['profile'], { relativeTo: this._activatedRoute });
+    }
+
+    logout() {
+        this.isUserDropdownOpen = false;
+        console.log('User logged out');
+        // this._authService.logout();
+        this._router.navigate(['/login']); 
     }
 }
