@@ -46,8 +46,8 @@
                     <app-persian-date-picker 
                         formControlName="checkIn" 
                         label="تاریخ ورود"
-                        placeholder="انتخاب تاریخ">
-                    </app-persian-date-picker>
+                        placeholder="انتخاب تاریخ"
+                        [minDate]="minDateToday" />
                     <div class="h-4 flex items-center pr-1">
                         @if (entityForm.get('checkIn')?.touched && entityForm.get('checkIn')?.invalid) {
                             <span class="text-[10px] text-red-500 animate-fade-in flex items-center gap-1">
@@ -62,8 +62,8 @@
                     <app-persian-date-picker 
                         formControlName="checkOut" 
                         label="تاریخ خروج"
-                        placeholder="انتخاب تاریخ">
-                    </app-persian-date-picker>
+                        placeholder="انتخاب تاریخ"
+                        [minDate]="minDateToday" />
                     <div class="h-4 flex items-center pr-1">
                         @if (entityForm.get('checkOut')?.touched && entityForm.get('checkOut')?.invalid) {
                             <span class="text-[10px] text-red-500 animate-fade-in flex items-center gap-1">

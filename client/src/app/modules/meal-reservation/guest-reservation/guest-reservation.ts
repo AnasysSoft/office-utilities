@@ -30,11 +30,20 @@ export class GuestReservation extends baseForm {
 	guestDays: GuestDay[] = [];
 	showCalendar = false;
 
+    minDateToday: string = '';
+
 	private getLocalIsoDate(date: Date): string {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
+    }
+
+    override ngOnInit(): void {
+        super.ngOnInit();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        this.minDateToday = this.getLocalIsoDate(today);
     }
 
 	override initialForm(): void {

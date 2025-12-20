@@ -21,6 +21,8 @@ export class PersianDatePickerComponent implements ControlValueAccessor {
 	@Input() label: string = 'تاریخ';
 	@Input() placeholder: string = 'انتخاب کنید';
 
+	@Input() minDate: string | null = null;
+
 	isOpen = signal(false);
 	selectedDate: Date | null = null;
 	displayValue: string = '';
@@ -55,8 +57,8 @@ export class PersianDatePickerComponent implements ControlValueAccessor {
 	}
 
 	selectDay(day: any) {
-		if (!day.isCurrentMonth) return;
-
+		if (!day.isCurrentMonth || day.isDisabled) return;
+		
 		this.selectedDate = day.dateObj;
 		this.formatDisplay();
 		this.onChange(this.selectedDate?.toISOString().split('T')[0]);
@@ -106,9 +108,22 @@ export class PersianDatePickerComponent implements ControlValueAccessor {
 
 			const isToday = d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
 
+			let isDisabled = false;
+            if (this.minDate) {
+                const min = new Date(this.minDate);
+                min.setHours(0, 0, 0, 0);
+                const current = new Date(d);
+                current.setHours(0, 0, 0, 0);
+                
+                if (current < min) {
+                    isDisabled = true;
+                }
+            }
+
 			this.calendarDays.push({
 				dateObj: d,
 				dayNum: new Intl.DateTimeFormat('fa-IR', { day: 'numeric' }).format(d),
+				isDisabled,
 				isCurrentMonth,
 				isSelected,
 				isToday

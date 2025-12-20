@@ -44,8 +44,8 @@
                  (click)="selectDay(day)"
                  class="h-8 rounded-lg flex items-center justify-center text-xs font-medium cursor-pointer transition-all relative overflow-hidden"
                  [ngClass]="{
-                    'text-text-muted/30 pointer-events-none': !day.isCurrentMonth,
-                    'hover:bg-primary/10 hover:text-primary': day.isCurrentMonth && !day.isSelected,
+                    'text-text-muted/30 pointer-events-none': !day.isCurrentMonth || day.isDisabled,
+                    'hover:bg-primary/10 hover:text-primary': day.isCurrentMonth && !day.isSelected && !day.isDisabled,
                     'bg-primary text-white shadow-md shadow-primary/30': day.isSelected,
                     'text-primary font-bold border border-primary/30': day.isToday && !day.isSelected
                  }">
