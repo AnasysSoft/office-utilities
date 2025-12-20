@@ -89,7 +89,7 @@ export class FoodManagement implements OnInit {
 			);
 			this._toastService.show('موفق', 'غذا با موفقیت ویرایش شد.', 'success');
 		} else {
-			const newId = Date.now(); // یک آیدی تصادفی
+			const newId = Date.now();
 			this.foods.update(list => [...list, { id: newId, ...formValue }]);
 			this._toastService.show('موفق', 'غذای جدید اضافه شد.', 'success');
 		}
