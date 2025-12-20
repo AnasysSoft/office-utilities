@@ -10,15 +10,18 @@ export interface DayReservation {
   	guestName?: string;
 }
 
+export type ReservationStatus = 'approved' | 'absent' | 'leave' | 'not_reserved' | 'mission' | 'rejected';
+
 export interface UserDailyReservation {
 	id: number;
-	userId: string;
 	userName: string;
 	personnelCode: string;
 	foodName: string;
 	sideName?: string;
 	quantity: number;
-	isApproved: boolean;
+	type: 'personnel' | 'guest';
+	status: ReservationStatus;
+	rejectionReason?: string;
 }
 
 export interface DailyMenuStatus {
@@ -33,8 +36,6 @@ export interface DailyMenuStatus {
   providedIn: 'root',
 })
 export class MealService {
-	private reservations = signal<Map<string, DayReservation>>(new Map());
-
 	private dailyMenus = signal<Map<string, DailyMenuStatus>>(new Map());
 
 	private dailyUserReservations = signal<Map<string, UserDailyReservation[]>>(new Map());
@@ -91,9 +92,54 @@ export class MealService {
 	private seedMockData() {
 		const today = new Date().toISOString().split('T')[0];
 		const mockData: UserDailyReservation[] = [
-		{ id: 1, userId: 'u1', userName: 'علی محمدی', personnelCode: '123456', foodName: 'چلو کباب', sideName: 'نوشابه', quantity: 1, isApproved: false },
-		{ id: 2, userId: 'u2', userName: 'سارا احمدی', personnelCode: '654321', foodName: 'زرشک پلو', sideName: 'دوغ', quantity: 2, isApproved: true },
-		{ id: 3, userId: 'u3', userName: 'رضا کمالی', personnelCode: '987654', foodName: 'قورمه سبزی', quantity: 1, isApproved: false },
+			{ 
+				id: 1, 
+				personnelCode: '123456', 
+				userName: 'علی محمدی', 
+				foodName: 'چلو کباب کوبیده', 
+				sideName: 'نوشابه', 
+				quantity: 1, 
+				type: 'personnel', 
+				status: 'approved' 
+			},
+			{ 
+				id: 2, 
+				personnelCode: '654321', 
+				userName: 'سارا احمدی', 
+				foodName: 'زرشک پلو با مرغ', 
+				sideName: 'دوغ محلی', 
+				quantity: 2, 
+				type: 'personnel', 
+				status: 'approved' 
+			},
+			{ 
+				id: 3, 
+				personnelCode: '987654', 
+				userName: 'رضا کمالی', 
+				foodName: 'قورمه سبزی', 
+				quantity: 1, 
+				type: 'personnel', 
+				status: 'absent' 
+			},
+			{ 
+				id: 4, 
+				personnelCode: 'Guest-01', 
+				userName: 'میهمان: مهندس رحیمی', 
+				foodName: 'چلو کباب کوبیده', 
+				quantity: 3, 
+				type: 'guest', 
+				status: 'approved' 
+			},
+			{ 
+				id: 5, 
+				personnelCode: '112233', 
+				userName: 'امید زارعی', 
+				foodName: 'خوراک شنیسل', 
+				sideName: 'ماست موسیر',
+				quantity: 1, 
+				type: 'personnel', 
+				status: 'leave' 
+			}
 		];
 		
 		this.dailyUserReservations.update(map => {
@@ -113,7 +159,7 @@ export class MealService {
 			const list = newMap.get(dateIso) || [];
 			
 			const updatedList = list.map(item => 
-				item.id === reservationId ? { ...item, isApproved: !item.isApproved } : item
+				item.id === reservationId ? { ...item, isApproved: item.status !== 'approved' } : item
 			);
 			
 			newMap.set(dateIso, updatedList);

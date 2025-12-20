@@ -128,7 +128,8 @@ export class GuestReservation extends baseForm {
 				date: day.dateIso, 
 				persianDate: day.fullDate,
 				guestName: this.entityForm.get('fullName')?.value,
-				guestCount: this.entityForm.get('guestCount')?.value
+				guestCount: this.entityForm.get('guestCount')?.value,
+                from: 'guest'
 			}
 		});
 	}

@@ -1,149 +1,254 @@
 <div class="flex flex-col h-full bg-[#f4f5f8] animate-fade-in relative">
-    <div class="sticky top-0 z-30 bg-[#f4f5f8]/95 backdrop-blur-md pb-2 pt-4 px-4 flex flex-col gap-4 shadow-sm border-b border-white/50">
-        <div class="flex items-center gap-3">
-            <button (click)="goBack()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-gray-200 text-text-muted hover:text-text-main shadow-sm transition-transform active:scale-90 cursor-pointer">
-                <icon name="arrow-right" className="w-5 h-5"></icon>
-            </button>
-
-            <button (click)="printList()" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-gray-200 text-text-muted hover:text-primary shadow-sm transition-transform active:scale-90 cursor-pointer print:hidden">
-                <icon name="printer" className="w-5 h-5"></icon>
-            </button>
-            
-            <div class="flex-1 relative h-11">
-                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                    <icon name="magnifying-glass" className="w-5 h-5 text-gray-400"></icon>
+    <div class="sticky top-0 z-30 bg-[#f4f5f8]/95 backdrop-blur-xl shadow-sm border-b border-white/60 print:hidden flex flex-col gap-3 pb-3 pt-4 px-4 sm:px-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="flex items-center gap-3 shrink-0">
+                <button (click)="goBack()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-text-muted hover:text-text-main shadow-sm transition-all active:scale-95 cursor-pointer hover:border-gray-300">
+                    <icon name="arrow-right" className="w-5 h-5"></icon>
+                </button>
+                <div class="flex flex-col">
+                    <h2 class="text-base font-black text-text-main leading-none">لیست رزرو</h2>
+                    <span class="text-[10px] text-text-muted mt-1 font-medium">{{ persianDateLabel }}</span>
                 </div>
-                <input type="text" 
-                       [ngModel]="searchTerm()" 
-                       (ngModelChange)="searchTerm.set($event)"
-                       placeholder="جستجو در رزروهای {{ persianDateLabel }}..." 
-                       class="w-full h-full rounded-2xl bg-white border border-gray-200 pl-4 pr-11 text-sm font-bold text-text-main placeholder-gray-400 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all shadow-sm outline-none">
+            </div>
+
+            <div class="flex items-center gap-3 flex-1 w-full md:w-auto md:max-w-xl">
+                <div class="relative h-10 w-full group">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none transition-colors group-focus-within:text-primary">
+                        <icon name="magnifying-glass" className="w-4 h-4 text-gray-400"></icon>
+                    </div>
+                    <input type="text" 
+                           [ngModel]="searchTerm()" 
+                           (ngModelChange)="searchTerm.set($event)"
+                           placeholder="جستجو در نام یا کد..." 
+                           class="w-full h-full rounded-xl bg-white border border-gray-200 pl-4 pr-9 text-xs font-bold text-text-main placeholder-gray-400 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm">
+                </div>
+
+                <button (click)="printList()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-text-muted hover:text-primary hover:border-primary/30 shadow-sm transition-all active:scale-95 cursor-pointer shrink-0">
+                    <icon name="printer" className="w-5 h-5"></icon>
+                </button>
             </div>
         </div>
 
-        <div class="flex items-stretch gap-3">
-            <div class="flex items-center gap-3 bg-white px-4 py-1 rounded-2xl border border-gray-200 shadow-sm shrink-0">
-                <div class="relative w-10 h-10 flex items-center justify-center">
-                    <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                        <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
-                        <path class="text-primary transition-all duration-1000 ease-out" [attr.stroke-dasharray]="stats().percentage + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
-                    </svg>
-                    <span class="absolute text-[9px] font-black text-text-main pt-0.5">{{ stats().percentage }}%</span>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <span class="text-[9px] text-text-muted font-bold">وضعیت تایید</span>
-                    <span class="text-xs font-black text-text-main">{{ stats().approved }} <span class="text-gray-300 font-light">/</span> {{ stats().total }}</span>
-                </div>
+        <div class="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div class="relative flex p-1 bg-white border border-gray-200 rounded-xl shrink-0 h-10 shadow-sm">
+                <button (click)="setUserType('personnel')" 
+                        class="px-3 rounded-lg text-xs font-bold transition-all duration-200 z-10 flex items-center justify-center gap-1.5 cursor-pointer"
+                        [ngClass]="userTypeFilter() === 'personnel' ? 'bg-gray-100 text-text-main shadow-inner' : 'text-text-muted hover:bg-gray-50'">
+                    <icon name="user" className="w-3.5 h-3.5"></icon>
+                    <span>پرسنل</span>
+                </button>
+                <button (click)="setUserType('guest')" 
+                        class="px-3 rounded-lg text-xs font-bold transition-all duration-200 z-10 flex items-center justify-center gap-1.5 cursor-pointer"
+                        [ngClass]="userTypeFilter() === 'guest' ? 'bg-gray-100 text-text-main shadow-inner' : 'text-text-muted hover:bg-gray-50'">
+                    <icon name="users" className="w-3.5 h-3.5"></icon>
+                    <span>میهمان</span>
+                </button>
             </div>
 
-            <div class="flex-1 flex bg-gray-200/60 p-1 rounded-2xl">
-                <button (click)="setTab('all')" 
-                        class="flex-1 rounded-xl text-[10px] font-bold transition-all duration-300 cursor-pointer"
-                        [ngClass]="activeTab() === 'all' ? 'bg-white text-text-main shadow-sm' : 'text-text-muted hover:bg-white/50'">
-                    همه
-                </button>
-                
-                <button (click)="setTab('pending')" 
-                        class="flex-1 rounded-xl text-[10px] font-bold transition-all duration-300 cursor-pointer"
-                        [ngClass]="activeTab() === 'pending' ? 'bg-white text-text-main shadow-sm' : 'text-text-muted hover:bg-white/50'">
-                    مانده
-                </button>
-                
-                <button (click)="setTab('approved')" 
-                        class="flex-1 rounded-xl text-[10px] font-bold transition-all duration-300 cursor-pointer"
-                        [ngClass]="activeTab() === 'approved' ? 'bg-white text-text-main shadow-sm' : 'text-text-muted hover:bg-white/50'">
-                    تایید
-                </button>
+            <div class="w-px h-6 bg-gray-300 mx-1 shrink-0"></div>
 
-            </div>
+            <button (click)="filterByStatus('all')" 
+                    class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg active:scale-95 select-none shrink-0"
+                    [ngClass]="getFilterChipStyle('all')">
+                <span>کل</span>
+                <span class="px-1 py-0.5 rounded text-[9px] min-w-[16px] text-center font-black leading-none"
+                      [ngClass]="getFilterBadgeStyle('all')">{{ stats().total }}</span>
+            </button>
+
+            <button (click)="filterByStatus('approved')" 
+                    class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg active:scale-95 select-none shrink-0"
+                    [ngClass]="getFilterChipStyle('approved')">
+                <span>تایید</span>
+                <span class="px-1 py-0.5 rounded text-[9px] min-w-[16px] text-center font-black leading-none"
+                      [ngClass]="getFilterBadgeStyle('approved')">{{ stats().approved }}</span>
+            </button>
+
+            <button (click)="filterByStatus('absent')" 
+                    class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg active:scale-95 select-none shrink-0"
+                    [ngClass]="getFilterChipStyle('absent')">
+                <span>غیبت</span>
+                <span class="px-1 py-0.5 rounded text-[9px] min-w-[16px] text-center font-black leading-none"
+                      [ngClass]="getFilterBadgeStyle('absent')">{{ stats().absent }}</span>
+            </button>
+
+            <button (click)="filterByStatus('leave')" 
+                    class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg active:scale-95 select-none shrink-0"
+                    [ngClass]="getFilterChipStyle('leave')">
+                <span>مرخصی</span>
+                <span class="px-1 py-0.5 rounded text-[9px] min-w-[16px] text-center font-black leading-none"
+                      [ngClass]="getFilterBadgeStyle('leave')">{{ stats().leave }}</span>
+            </button>
+
+            <button (click)="filterByStatus('mission')" 
+                    class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg active:scale-95 select-none shrink-0"
+                    [ngClass]="getFilterChipStyle('mission')">
+                <span>ماموریت</span>
+                <span class="px-1 py-0.5 rounded text-[9px] min-w-[16px] text-center font-black leading-none"
+                      [ngClass]="getFilterBadgeStyle('mission')">{{ stats().mission }}</span>
+            </button>
+
         </div>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-4 pb-24 pt-3 print:hidden"> @if (filteredReservations().length === 0) {
+    <div class="flex-1 overflow-y-auto px-4 pb-24 pt-3 print:hidden"> 
+        @if (filteredReservations().length === 0) {
             <div class="flex flex-col items-center justify-center h-64 opacity-40">
                 <icon name="face-frown" className="w-12 h-12 text-text-muted mb-3"></icon>
                 <span class="text-sm font-bold text-text-muted">موردی یافت نشد</span>
             </div>
-        } 
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            @for (res of filteredReservations(); track res.id) {
-                <div (click)="toggleApproval(res)"
-                     class="group relative bg-white p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer select-none overflow-hidden hover:-translate-y-1 hover:shadow-md"
-                     [ngClass]="res.isApproved ? 'border-green-500/50 shadow-sm' : 'border-white shadow-sm hover:border-gray-200'">
-                    
-                    @if (res.isApproved) {
-                        <div class="absolute inset-0 bg-green-50/30 pointer-events-none"></div>
-                    }
-
-                    <div class="relative flex items-start gap-3 z-10">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-black shrink-0 transition-colors"
-                             [ngClass]="res.isApproved ? 'bg-green-100 text-green-700' : 'bg-[#f4f5f8] text-text-muted'">
-                            {{ res.userName.charAt(0) }}
-                        </div>
-
-                        <div class="flex-1 flex flex-col min-w-0">
-                            <div class="flex justify-between items-start">
-                                <div class="flex flex-col min-w-0">
-                                    <h3 class="text-xs font-bold text-text-main truncate pl-1"
-                                        [class.opacity-60]="res.isApproved">
-                                        {{ res.userName }}
-                                    </h3>
-                                    <span class="text-[10px] text-text-muted font-mono mt-0.5">{{ res.personnelCode }}</span>
-                                </div>
-                                
-                                <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0 ml-1"
-                                     [ngClass]="res.isApproved ? 'bg-green-500 border-green-500' : 'border-gray-300 bg-transparent'">
-                                    <icon *ngIf="res.isApproved" name="check" className="w-3.5 h-3.5 text-white animate-scale-in"></icon>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-2.5 flex flex-wrap gap-1.5">
-                                <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold"
-                                     [ngClass]="res.isApproved ? 'bg-white/80 text-text-main/70' : 'bg-gray-100 text-text-main'">
-                                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="res.isApproved ? 'bg-green-400' : 'bg-primary'"></span>
-                                    <span>{{ res.foodName }}</span>
-                                </div>
-                                
-                                @if (res.sideName) {
-                                    <div class="flex items-center px-2 py-1 rounded-lg text-[10px] font-medium"
-                                         [ngClass]="res.isApproved ? 'bg-white/50 text-text-muted' : 'bg-gray-50 text-text-muted'">
-                                        <span>{{ res.sideName }}</span>
-                                    </div>
-                                }
-                                
-                                @if (res.quantity > 1) {
-                                    <div class="px-1.5 py-1 rounded-lg text-[10px] font-black"
-                                         [ngClass]="res.isApproved ? 'bg-green-100 text-green-700' : 'bg-primary/10 text-primary'">
-                                        x{{ res.quantity }}
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
+        } @else {
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                
+                <div class="hidden md:grid grid-cols-[50px_1fr_1fr_1fr_100px_100px] gap-4 p-4 border-b border-gray-100 bg-gray-50/50 text-[10px] text-text-muted font-bold">
+                    <div class="text-center">#</div>
+                    <div>نام و نام خانوادگی</div>
+                    <div>غذای اصلی</div>
+                    <div>مخلفات</div>
+                    <div class="text-center">کد پرسنلی</div>
+                    <div class="text-center">وضعیت</div>
                 </div>
-            }
-        </div>
+
+                <div class="divide-y divide-gray-100">
+                    @for (res of filteredReservations(); track res.id; let i = $index) {
+                        <div (click)="handleCardClick(res)" 
+                            class="group relative transition-colors cursor-pointer select-none hover:bg-gray-50">
+                            
+                            <div class="md:hidden p-3.5 flex items-start gap-3">
+                                
+                                <div class="absolute right-0 top-0 bottom-0 w-1"
+                                    [ngClass]="{
+                                        'bg-emerald-500': res.status === 'approved',
+                                        'bg-rose-500': res.status === 'absent',
+                                        'bg-amber-500': res.status === 'leave',
+                                        'bg-sky-500': res.status === 'mission',
+                                        'bg-slate-300': res.status === 'not_reserved' || res.status === 'rejected'
+                                    }"></div>
+
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shrink-0 shadow-sm border border-gray-100"
+                                    [ngClass]="res.status === 'approved' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-50 text-gray-500'">
+                                    {{ res.userName.charAt(0) }}
+                                </div>
+
+                                <div class="flex-1 min-w-0 flex flex-col gap-1.5">
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <h3 class="text-xs font-bold text-text-main truncate"
+                                            [class.opacity-60]="res.status !== 'approved'">
+                                            {{ res.userName }}
+                                        </h3>
+                                        
+                                        <div class="px-1.5 py-0.5 rounded text-[9px] font-bold border flex items-center gap-1"
+                                            [ngClass]="getStatusColor(res.status)">
+                                            <span>{{ getStatusLabel(res.status) }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2 text-[10px] text-text-muted/90 truncate">
+                                        <span class="truncate" [class.opacity-50]="res.status !== 'approved'">{{ res.foodName }}</span>
+                                        @if (res.sideName) {
+                                            <span class="w-1 h-1 rounded-full bg-gray-300 shrink-0"></span>
+                                            <span class="text-text-muted/70 truncate">{{ res.sideName }}</span>
+                                        }
+                                    </div>
+
+                                    <div class="flex justify-between items-center mt-0.5">
+                                        <span class="text-[9px] font-mono text-text-muted/60 bg-gray-50 px-1.5 py-0.5 rounded">{{ res.personnelCode }}</span>
+                                        
+                                        @if (res.quantity > 1) {
+                                            <div class="flex items-center gap-1 bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] font-black">
+                                                <span>x{{ res.quantity }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden md:grid grid-cols-[50px_1fr_1fr_1fr_100px_100px] gap-4 p-4 items-center">
+                                <div class="text-center text-xs text-text-muted font-mono">{{ i + 1 }}</div>
+                                <div class="text-sm font-bold text-text-main" [class.opacity-60]="res.status !== 'approved'">{{ res.userName }}</div>
+                                
+                                <div class="text-xs text-text-main flex items-center gap-1">
+                                    <span [class.opacity-50]="res.status !== 'approved'">{{ res.foodName }}</span>
+                                    @if (res.quantity > 1) {
+                                        <span class="bg-primary/10 text-primary px-1.5 rounded text-[9px] font-black">x{{ res.quantity }}</span>
+                                    }
+                                </div>
+
+                                <div class="text-xs text-text-muted">{{ res.sideName || '-' }}</div>
+                                
+                                <div class="text-center">
+                                    <span class="text-xs font-mono text-text-muted bg-gray-50 rounded-lg px-2 py-1">{{ res.personnelCode }}</span>
+                                </div>
+
+                                <div class="flex justify-center">
+                                    <div class="px-2 py-1 rounded-lg text-[10px] font-bold border text-center min-w-[80px]"
+                                        [ngClass]="getStatusColor(res.status)">
+                                        {{ getStatusLabel(res.status) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        }
     </div>
+
+    @if (isRejectModalOpen) {
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in" (click)="closeRejectModal()">
+            <div class="bg-surface w-full max-w-sm rounded-3xl shadow-2xl p-6 animate-scale-in" (click)="$event.stopPropagation()">
+                
+                <div class="mb-4 text-center">
+                    <h3 class="text-lg font-bold text-text-main">تغییر وضعیت رزرو</h3>
+                    <p class="text-xs text-text-muted mt-1">
+                        لطفاً علت عدم تایید برای 
+                        <span class="font-bold text-primary">{{ rejectTarget?.userName }}</span> 
+                        را مشخص کنید.
+                    </p>
+                </div>
+
+                <div class="flex flex-col gap-2 mb-6">
+                    @for (reason of rejectionReasons; track reason.value) {
+                        <label class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all hover:bg-gray-50"
+                               [ngClass]="selectedReason === reason.value ? 'border-red-500 bg-red-50 hover:bg-red-50' : 'border-border'">
+                            <input type="radio" name="reason" [value]="reason.value" [(ngModel)]="selectedReason" class="accent-red-500 w-4 h-4">
+                            <span class="text-sm font-bold" [ngClass]="selectedReason === reason.value ? 'text-red-700' : 'text-text-main'">{{ reason.label }}</span>
+                        </label>
+                    }
+                </div>
+
+                <div class="flex gap-3">
+                    <button (click)="closeRejectModal()" class="flex-1 h-11 rounded-xl border border-border text-text-muted text-sm font-bold hover:bg-gray-50 transition-colors cursor-pointer">
+                        انصراف
+                    </button>
+                    <button (click)="confirmRejection()" class="flex-1 h-11 rounded-xl bg-red-500 text-white text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-600 active:scale-95 transition-all cursor-pointer">
+                        تایید و ثبت
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    }
+
     <div class="fixed bottom-6 left-0 right-0 flex justify-center z-40 print:hidden pointer-events-none">
         <button (click)="finalizeList()" class="cursor-pointer pointer-events-auto flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-8 py-3.5 rounded-2xl shadow-lg shadow-primary/30 transition-all active:scale-95 active:shadow-sm font-bold text-sm">
             <icon name="check-circle" className="w-5 h-5"></icon>
             <span>ثبت نهایی لیست</span>
-            <span class="bg-white/20 px-2 py-0.5 rounded-md text-xs ml-1">{{ stats().approved }} نفر</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded-md text-xs ml-1">{{ stats().approved }} تایید</span>
         </button>
     </div>
 
     <div id="print-section" class="hidden print:block">
-        
         <div class="flex justify-between items-end border-b-2 border-black pb-4 mb-6">
             <div class="flex flex-col">
-                <h1 class="text-2xl font-black text-black">لیست رزرو غذا</h1>
+                <h1 class="text-2xl font-black text-black">لیست رزرو غذا - {{ userTypeFilter() === 'personnel' ? 'پرسنل' : 'میهمان' }}</h1>
                 <span class="text-sm text-black mt-2">تاریخ: <b>{{ persianDateLabel }}</b></span>
             </div>
             <div class="flex flex-col items-end text-sm text-black">
                 <div class="flex gap-6">
                     <span>تعداد کل: <b>{{ stats().total }}</b></span>
-                    <span>تعداد تایید شده: <b>{{ stats().approved }}</b></span>
+                    <span>تایید شده: <b>{{ stats().approved }}</b></span>
                 </div>
             </div>
         </div>
@@ -164,29 +269,15 @@
                 @for (res of filteredReservations(); track res.id; let i = $index) {
                     <tr>
                         <td style="text-align: center;">{{ i + 1 }}</td>
-                        
                         <td class="font-bold">{{ res.userName }}</td>
-                        
                         <td>{{ res.personnelCode }}</td>
-                        
                         <td>{{ res.foodName }}</td>
-                        
                         <td>{{ res.sideName || '-' }}</td>
-
                         <td style="text-align: center;">
-                            @if (res.quantity > 1) {
-                                <b>{{ res.quantity }}</b>
-                            } @else {
-                                1
-                            }
+                            @if (res.quantity > 1) { <b>{{ res.quantity }}</b> } @else { 1 }
                         </td>
-                        
                         <td style="text-align: center;">
-                            @if (res.isApproved) {
-                                <span>✔ تایید</span>
-                            } @else {
-                                <span>---</span>
-                            }
+                            @if (res.status === 'approved') { تایید } @else { {{ getStatusLabel(res.status) }} }
                         </td>
                     </tr>
                 }

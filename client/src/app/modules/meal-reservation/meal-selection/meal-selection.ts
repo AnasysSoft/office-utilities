@@ -140,7 +140,7 @@ export class MealSelection implements OnInit {
 	onSelectDay(day: CalendarDay) {
         if (day.isHoliday || day.isPast) return;
 
-        const queryParams = { date: day.dateIso, persianDate: day.fullDate };
+        const queryParams = { date: day.dateIso, persianDate: day.fullDate, from: 'selection' };
 
         if (this.currentMode === 'admin') {
             this._router.navigate(['../admin/daily-menu'], { relativeTo: this._route, queryParams });

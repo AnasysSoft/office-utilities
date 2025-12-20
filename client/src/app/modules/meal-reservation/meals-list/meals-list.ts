@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MealService } from '../../../core/services/meal.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Icon } from '../../../shared/icon/icon';
@@ -18,6 +18,7 @@ interface SimpleMeal {
   styleUrl: './meals-list.scss',
 })
 export class MealsList implements OnInit {
+	private _router = inject(Router);
 	private _route = inject(ActivatedRoute);
 	private _location = inject(Location);
 	private _mealService = inject(MealService);
@@ -27,6 +28,8 @@ export class MealsList implements OnInit {
 	persianDateLabel: string = '';
 
 	guestName: string | null = null;
+
+	returnSource: string = 'selection';
 
 	mainCourses: SimpleMeal[] = [
 		{ id: 1, name: 'چلو کباب کوبیده زعفرانی', type: 'main' },
@@ -56,6 +59,8 @@ export class MealsList implements OnInit {
 			const defaultGuestCount = params['guestCount'] ? +params['guestCount'] : 1;
 
 			const existing = this._mealService.getReservation(this.targetDate, this.guestName || undefined);
+
+			this.returnSource = params['from'] || 'selection';
 		
 			if (existing) {
 				this.selectedMainId = existing.selectedFoodId || null;
@@ -70,17 +75,21 @@ export class MealsList implements OnInit {
 	}
 
 	goBack() {
-		this._location.back();
-	}
+        if (this.returnSource === 'guest') {
+            this._router.navigate(['/rsv/guest']);
+        } else {
+            this._router.navigate(['/rsv/reserve']);
+        }
+    }
 
 	selectMain(meal: SimpleMeal) {
 		this.selectedMainId = meal.id;
-		this.saveReservation();
+		// this.saveReservation();
 	}
 
 	selectSide(meal: SimpleMeal) {
 		this.selectedSideId = meal.id;
-		this.saveReservation();
+		// this.saveReservation();
 	}
 
 	updateQuantity(delta: number) {
@@ -128,12 +137,8 @@ export class MealsList implements OnInit {
 			this.guestName || undefined
 		);
 		
-		this._toastService.show(
-		'ثبت شد',
-		`سفارش شما (${this.quantity} پرس) با موفقیت ذخیره شد.`,
-		'success'
-		);
+		this._toastService.show('ثبت شد', `سفارش شما (${this.quantity} پرس) با موفقیت ذخیره شد.`, 'success');
 		
-		// setTimeout(() => this.goBack(), 1000); 
+		setTimeout(() => this.goBack(), 1000); 
 	}
 }
